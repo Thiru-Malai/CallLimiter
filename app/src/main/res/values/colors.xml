@@ -42,7 +42,7 @@
     <color name="light_clr_light_a0">#ffffff</color>
 
     <!-- Primary Colors -->
-    <color name="light_clr_primary_a0">#228729</color>
+        <color name="light_clr_primary_a0">#228729</color>
     <color name="light_clr_primary_a10">#348734</color>
     <color name="light_clr_primary_a20">#41863f</color>
     <color name="light_clr_primary_a30">#4d8649</color>

@@ -35,8 +35,7 @@ public class CallMonitorService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        // TODO: For future release
-//        createNotificationChannel();
+        createNotificationChannel();
         startForeground(1, getNotification());
 
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
