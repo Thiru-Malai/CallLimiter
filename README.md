@@ -21,3 +21,8 @@ Call Limiter is an Android application designed to help users set a time limit f
 5. **Delete a Limit**: Users can remove the time restriction for a number anytime.
 
 This app is ideal for managing call durations effectively, whether for personal use or controlling excessive call times.
+
+## Screenshots
+<img src="https://github.com/user-attachments/assets/48623ec5-62b3-4a21-8fb7-70a6cdd990fa" width="270" height="603" alt="light_theme">
+<img src="https://github.com/user-attachments/assets/76895ded-ad30-4a6f-85be-4e1730cb2bb2" width="270" height="603" alt="dark_theme">
+<img src="https://github.com/user-attachments/assets/312e65ce-d1e0-41a9-b915-8336d63b6706" width="270" height="603" alt="time_limit">
