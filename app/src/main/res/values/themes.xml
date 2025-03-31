@@ -1,0 +1,62 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.CallLimiter" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/light_clr_primary_a0</item>
+        <item name="colorPrimaryVariant">@color/light_clr_primary_a10</item>
+        <item name="colorOnPrimary">@color/light_clr_light_a0</item>
+
+        <!-- Secondary Colors -->
+        <item name="colorSecondary">@color/light_clr_primary_a20</item>
+        <item name="colorSecondaryVariant">@color/light_clr_primary_a30</item>
+        <item name="colorOnSecondary">@color/light_clr_dark_a0</item>
+
+        <!-- Background & Surface -->
+        <item name="android:colorBackground">@color/light_clr_surface_tonal_a0</item>
+        <item name="colorSurface">@color/light_clr_surface_tonal_a10</item>
+        <item name="colorOnSurface">@color/light_clr_dark_a0</item>
+
+        <!-- Status & Navigation Bar -->
+        <item name="android:statusBarColor">@color/light_clr_surface_a20</item>
+        <item name="android:navigationBarColor">@color/light_clr_surface_a30</item>
+
+        <!-- Text & Icon Colors -->
+        <item name="android:textColorPrimary">@color/light_clr_dark_a0</item>
+        <item name="android:textColorSecondary">@color/light_clr_surface_tonal_a50</item>
+        <item name="android:colorAccent">@color/light_clr_primary_a40</item>
+
+        <!-- Elevated Surfaces -->
+        <item name="colorSurfaceVariant">@color/light_clr_surface_a50</item>
+        <item name="colorOnSurfaceVariant">@color/light_clr_surface_tonal_a40</item>
+    </style>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.CallLimiter" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/light_clr_primary_a0</item>
+        <item name="colorPrimaryVariant">@color/light_clr_primary_a10</item>
+        <item name="colorOnPrimary">@color/light_clr_light_a0</item>
+
+        <!-- Secondary Colors -->
+        <item name="colorSecondary">@color/light_clr_primary_a20</item>
+        <item name="colorSecondaryVariant">@color/light_clr_primary_a30</item>
+        <item name="colorOnSecondary">@color/light_clr_dark_a0</item>
+
+        <!-- Background & Surface -->
+        <item name="android:colorBackground">@color/light_clr_surface_tonal_a0</item>
+        <item name="colorSurface">@color/light_clr_surface_tonal_a10</item>
+        <item name="colorOnSurface">@color/light_clr_dark_a0</item>
+
+        <!-- Status & Navigation Bar -->
+        <item name="android:statusBarColor">@color/light_clr_surface_a20</item>
+        <item name="android:navigationBarColor">@color/light_clr_surface_a30</item>
+
+        <!-- Text & Icon Colors -->
+        <item name="android:textColorPrimary">@color/light_clr_dark_a0</item>
+        <item name="android:textColorSecondary">@color/light_clr_surface_tonal_a50</item>
+        <item name="android:colorAccent">@color/light_clr_primary_a40</item>
+
+        <!-- Elevated Surfaces -->
+        <item name="colorSurfaceVariant">@color/light_clr_surface_a50</item>
+        <item name="colorOnSurfaceVariant">@color/light_clr_surface_tonal_a40</item>
+    </style>
+</resources>

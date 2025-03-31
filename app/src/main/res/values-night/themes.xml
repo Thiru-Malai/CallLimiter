@@ -1,0 +1,29 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.CallLimiter" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary Colors -->
+        <item name="colorPrimary">@color/clr_primary_a0</item>
+        <item name="colorPrimaryVariant">@color/clr_primary_a10</item>
+        <item name="colorOnPrimary">@color/clr_light_a0</item>
+
+        <!-- Secondary Colors -->
+        <item name="colorSecondary">@color/clr_primary_a20</item>
+        <item name="colorSecondaryVariant">@color/clr_primary_a30</item>
+        <item name="colorOnSecondary">@color/clr_dark_a0</item>
+
+        <!-- Background & Surface -->
+        <item name="android:colorBackground">@color/clr_surface_tonal_a0</item>
+        <item name="colorSurface">@color/clr_surface_tonal_a10</item>
+        <item name="colorOnSurface">@color/clr_light_a0</item>
+
+        <!-- Status & Navigation Bar -->
+        <item name="android:statusBarColor">@color/clr_surface_a20</item>
+        <item name="android:navigationBarColor">@color/clr_surface_a20</item>
+
+    </style>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.CallLimiter" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    </style>
+</resources>
