@@ -4,11 +4,13 @@ Call Limiter is an Android application designed to help users set a time limit f
 
 ## Features
 
-- **Call Duration Management**: Limits outgoing calls to the specified duration.
-- **Phone Number Validation**: Ensures that only valid phone numbers can be used.
-- **Persistent Storage**: Saves call limits using key-value pairs in SharedPreferences. 
-- **Delete Option**: Allows users to remove the time limit for a specific phone number.
-- **Bottom Sheet Timer**: A user-friendly scrollable wheel to select time limits in hours and minutes.
+- Set time limits for specific phone numbers.
+- Automatically disconnect calls when the time limit is reached.
+- Choose time limits using a scrollable wheel.
+- View and manage set time limits.
+- Delete time limits for specific numbers.
+- Save time limits persistently.
+- Supports both **Dark & Light** themes.
 
 ## How It Works
 
