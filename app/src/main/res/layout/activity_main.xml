@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/alegreya_semibold"
-        android:text="Limit"
+        android:text="@string/limit"
         android:textSize="30sp" />
 
     <TextView
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/alegreya"
-        android:text="for your calls!"
+        android:text="@string/for_your_calls"
         android:textSize="24sp" />
 
     <LinearLayout
@@ -32,7 +32,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight=".80"
-            android:hint="Limit talk for...."
+            android:hint="@string/limit_talk_for"
             android:paddingEnd="4dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -63,22 +63,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cornerRadius="5dp"
-        android:text="SET LIMIT" />
+        android:text="@string/set_limit" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/select_contact_button"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select from contacts" />
-
-
-<!--    <com.google.android.material.button.MaterialButton-->
-<!--        android:id="@+id/remove_limit_button"-->
-<!--        style="@style/Widget.MaterialComponents.Button.TextButton"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Remove Limit" />-->
+        android:text="@string/select_from_contacts" />
 
     <ScrollView
         android:layout_width="match_parent"

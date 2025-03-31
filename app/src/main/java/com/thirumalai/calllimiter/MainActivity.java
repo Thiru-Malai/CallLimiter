@@ -1,4 +1,4 @@
-package com.example.calllimiter;
+package com.thirumalai.calllimiter;
 
 import android.Manifest;
 import android.content.Intent;
@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,7 +32,8 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button timeLimitButton, setLimit, selectFromContacts;
+    private Button setLimit;
+    private Button selectFromContacts;
     private int selectedHour, selectedMinute;
     private TextInputEditText phoneNumberField;
     boolean isPhoneAvailable = false, isTimeAvailable = false;
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        timeLimitButton = findViewById(R.id.set_time_limit_button);
+        Button timeLimitButton = findViewById(R.id.set_time_limit_button);
         setLimit = findViewById(R.id.set_limit_button);
         selectFromContacts = findViewById(R.id.select_contact_button);
         phoneNumberField = findViewById(R.id.phone_number_input);
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             number.setTypeface(Typeface.DEFAULT_BOLD);
 
             TextView time = new TextView(this);
-            time.setText( hours + " hrs " + minutes + " mins");
+            time.setText(hours + " hrs " + minutes + " mins");
             time.setTextSize(16);
 
             valueLayout.addView(number);

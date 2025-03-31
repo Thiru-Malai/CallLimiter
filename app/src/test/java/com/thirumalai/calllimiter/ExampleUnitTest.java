@@ -1,4 +1,4 @@
-package com.example.calllimiter;
+package com.thirumalai.calllimiter;
 
 import org.junit.Test;
 
