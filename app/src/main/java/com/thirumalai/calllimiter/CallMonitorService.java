@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -31,12 +32,12 @@ public class CallMonitorService extends Service {
     private int CALL_TIME_LIMIT = 5 * 1000; // 30 seconds
     private PhoneStateListener phoneStateListener;
     private PhoneNumberUtil phoneNumberUtil;
+    private boolean isTimerRunning = false;
+    private int elapsedTime = 0; // Time in seconds
 
     @Override
     public void onCreate() {
         super.onCreate();
-        createNotificationChannel();
-        startForeground(1, getNotification());
 
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -45,6 +46,9 @@ public class CallMonitorService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        createNotificationChannel();
+        startForeground(1, getNotification());
+
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         phoneStateListener = new PhoneStateListener() {
             @Override
@@ -83,6 +87,10 @@ public class CallMonitorService extends Service {
     }
 
     private void startCallTimer() {
+        if (!isTimerRunning) {
+            isTimerRunning = true;
+            elapsedTime = 0;
+        }
         endCallRunnable = new Runnable() {
             @Override
             public void run() {
@@ -90,13 +98,34 @@ public class CallMonitorService extends Service {
             }
         };
         handler.postDelayed(endCallRunnable, CALL_TIME_LIMIT);
+        handler.post(updateRunnable); // Start updating notification
     }
 
     private void stopCallTimer() {
+        if (isTimerRunning) {
+            isTimerRunning = false;
+        }
         if (endCallRunnable != null) {
             handler.removeCallbacks(endCallRunnable);
+            handler.removeCallbacks(updateRunnable); // Stop updating notification
+
+            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            if (manager != null) {
+                manager.notify(1, getNotification()); // Revert to "Limiting Call Duration" notification
+            }
         }
     }
+
+    private Runnable updateRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isTimerRunning) {
+                updateTimerNotification();
+                elapsedTime++;
+                handler.postDelayed(this, 1000); // Repeat every second
+            }
+        }
+    };
 
     private void endCall() {
         try {
@@ -139,10 +168,33 @@ public class CallMonitorService extends Service {
 
     private Notification getNotification() {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Call Monitor Running")
-                .setContentText("Tracking call duration")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Call Monitor Active")
+                .setContentText("Limiting call duration")
+                .setSmallIcon(R.drawable.call_timer_transparent_foreground)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_new))
                 .build();
+    }
+
+    private void updateTimerNotification() {
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Call Monitor Active")
+                .setContentText("Time Left: " + formatTime((CALL_TIME_LIMIT / 1000) - elapsedTime))
+                .setSmallIcon(R.drawable.call_timer_transparent_foreground)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_new))
+                .setOngoing(true)
+                .build();
+
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        if (manager != null) {
+            manager.notify(1, notification); // Update the existing notification
+        }
+    }
+
+    private String formatTime(int seconds) {
+        int m = seconds / 60;
+        int s = seconds % 60;
+        return String.format("%02d:%02d", m, s);
     }
 
     @Override

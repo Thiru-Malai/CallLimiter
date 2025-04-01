@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -51,26 +52,34 @@ public class MainActivity extends AppCompatActivity {
         phoneNumberField = findViewById(R.id.phone_number_input);
 
         // Fetch Stored Values
-        updateSavedLimitsUI();
+        updateSavedLimitsUI("OnCreate");
 
         // Request necessary permissions
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.READ_CALL_LOG,
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.ANSWER_PHONE_CALLS,
+                Manifest.permission.FOREGROUND_SERVICE,
+        }, 1);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ANSWER_PHONE_CALLS) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED)
         {
-            ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.CALL_PHONE,
-                    Manifest.permission.ANSWER_PHONE_CALLS,
-                    Manifest.permission.FOREGROUND_SERVICE,
-                    Manifest.permission.READ_CALL_LOG
-            }, 1);
         }
 
-        // Start foreground service
-        startForegroundService(new Intent(this, CallMonitorService.class));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            ActivityCompat.requestPermissions(this, new String[] {
+                    Manifest.permission.POST_NOTIFICATIONS
+            }, 1);
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){}
+        }
+
+//        // Start foreground service
+//        startForegroundService(new Intent(this, CallMonitorService.class));
 
         // Add listener to phone number field
         phoneNumberField.addTextChangedListener(new TextWatcher() {
@@ -112,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String phoneNumber =  Objects.requireNonNull(phoneNumberField.getText()).toString().trim();
-                if(phoneNumber.isEmpty() || selectedHour != -1 || selectedMinute != -1){
+                if(phoneNumber.isEmpty() || selectedHour == -1 || selectedMinute == -1){
                     Toast.makeText(MainActivity.this, "Please make sure phone number and time limit is set.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -133,17 +142,35 @@ public class MainActivity extends AppCompatActivity {
                 selectedMinute = -1;
 
                 // Refresh UI
-                updateSavedLimitsUI();
+                updateSavedLimitsUI("SetLimit");
             }
         });
     }
 
-    private void updateSavedLimitsUI() {
+    private void updateSavedLimitsUI(String funcCalledFrom) {
         LinearLayout savedLimitsLayout = findViewById(R.id.saved_limits_layout);
         savedLimitsLayout.removeAllViews(); // Clear previous entries
 
         SharedPreferences sharedPreferences = getSharedPreferences("time_limits", MODE_PRIVATE);
         Map<String, ?> allEntries = sharedPreferences.getAll();
+
+        if(funcCalledFrom.equals("OnCreate") && !allEntries.isEmpty()){
+            // Start foreground service
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(new Intent(this, CallMonitorService.class));
+                Log.d("MainActivity", "Started Foreground Service from OnCreate");
+            }
+        }
+        else if(funcCalledFrom.equals("SetLimit") && allEntries.size() == 1){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(new Intent(this, CallMonitorService.class));
+                Log.d("MainActivity", "Started Foreground Service from SetLimit");
+            }
+        } else if(funcCalledFrom.equals("DeleteTimeLimit") && allEntries.isEmpty()){
+            Intent stopForegroundService = new Intent(this, CallMonitorService.class);
+            stopService(stopForegroundService);
+            Log.d("MainActivity", "Stopped Foreground Service from DeleteTimeLimit");
+        }
 
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             String phoneNumber = entry.getKey();
@@ -206,6 +233,6 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
 
         // Refresh UI
-        updateSavedLimitsUI();
+        updateSavedLimitsUI("DeleteTimeLimit");
     }
 }
