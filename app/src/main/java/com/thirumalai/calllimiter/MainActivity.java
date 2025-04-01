@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button setLimit;
     private Button selectFromContacts;
-    private int selectedHour, selectedMinute;
+    private int selectedHour = -1, selectedMinute = -1;
     private TextInputEditText phoneNumberField;
     boolean isPhoneAvailable = false, isTimeAvailable = false;
     private SharedPreferences sharedPreferences;
@@ -49,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
         setLimit = findViewById(R.id.set_limit_button);
         selectFromContacts = findViewById(R.id.select_contact_button);
         phoneNumberField = findViewById(R.id.phone_number_input);
-
-        setLimit.setEnabled(false);
 
         // Fetch Stored Values
         updateSavedLimitsUI();
@@ -99,9 +97,6 @@ public class MainActivity extends AppCompatActivity {
                         selectedMinute = minutes;
                         setLimit.setText("SET LIMIT - " + hours + " hrs " + minutes + " mins");
                         Toast.makeText(MainActivity.this, hours + " " + minutes, Toast.LENGTH_SHORT).show();
-                        if(isPhoneAvailable){
-                            setLimit.setEnabled(true);
-                        }
                     }
 
                     @Override
@@ -117,7 +112,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String phoneNumber =  Objects.requireNonNull(phoneNumberField.getText()).toString().trim();
-
+                if(phoneNumber.isEmpty() || selectedHour != -1 || selectedMinute != -1){
+                    Toast.makeText(MainActivity.this, "Please make sure phone number and time limit is set.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 int totalSeconds = (selectedHour * 3600) + (selectedMinute * 60);
                 sharedPreferences = getSharedPreferences("time_limits", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -129,7 +127,10 @@ public class MainActivity extends AppCompatActivity {
                 isPhoneAvailable = false;
                 phoneNumberField.setText(null);
                 setLimit.setText("SET LIMIT");
-                setLimit.setEnabled(false);
+
+                // Resetting time
+                selectedHour = -1;
+                selectedMinute = -1;
 
                 // Refresh UI
                 updateSavedLimitsUI();
@@ -169,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
             TextView number = new TextView(this);
             number.setText(phoneNumber);
             number.setTextSize(20);
-            number.setTextColor(Color.WHITE);
             number.setTypeface(Typeface.DEFAULT_BOLD);
 
             TextView time = new TextView(this);
