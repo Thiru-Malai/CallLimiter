@@ -3,7 +3,9 @@ package com.thirumalai.calllimiter;
 import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Insets;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -17,6 +19,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,6 +30,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.color.DynamicColors;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Map;
@@ -33,12 +38,12 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button setLimit;
-    private Button selectFromContacts;
+    private Button setLimit, selectFromContacts;
     private int selectedHour = -1, selectedMinute = -1;
     private TextInputEditText phoneNumberField;
     boolean isPhoneAvailable = false, isTimeAvailable = false;
     private SharedPreferences sharedPreferences;
+    private final String SHARED_PREF_NAME = "time_limits";
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -46,13 +51,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setupStatusBarAppearance();
+
         Button timeLimitButton = findViewById(R.id.set_time_limit_button);
         setLimit = findViewById(R.id.set_limit_button);
         selectFromContacts = findViewById(R.id.select_contact_button);
         phoneNumberField = findViewById(R.id.phone_number_input);
 
+        sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
+
         // Fetch Stored Values
-        updateSavedLimitsUI("OnCreate");
+        updateSavedLimitsUI("LoadOnCreate");
 
         // Request necessary permissions
         ActivityCompat.requestPermissions(this, new String[]{
@@ -126,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 int totalSeconds = (selectedHour * 3600) + (selectedMinute * 60);
-                sharedPreferences = getSharedPreferences("time_limits", MODE_PRIVATE);
+                sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
                 // Save the phone number as the key and time limit as the value
@@ -135,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
                 isPhoneAvailable = false;
                 phoneNumberField.setText(null);
-                setLimit.setText("SET LIMIT");
+                setLimit.setText(R.string.set_limit);
 
                 // Resetting time
                 selectedHour = -1;
@@ -147,26 +156,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void updateSavedLimitsUI(String funcCalledFrom) {
+    public void updateSavedLimitsUI(String action) {
         LinearLayout savedLimitsLayout = findViewById(R.id.saved_limits_layout);
         savedLimitsLayout.removeAllViews(); // Clear previous entries
 
-        SharedPreferences sharedPreferences = getSharedPreferences("time_limits", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
         Map<String, ?> allEntries = sharedPreferences.getAll();
 
-        if(funcCalledFrom.equals("OnCreate") && !allEntries.isEmpty()){
+        if(action.equals("LoadOnCreate") && !allEntries.isEmpty()){
             // Start foreground service
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(new Intent(this, CallMonitorService.class));
                 Log.d("MainActivity", "Started Foreground Service from OnCreate");
             }
         }
-        else if(funcCalledFrom.equals("SetLimit") && allEntries.size() == 1){
+        else if(action.equals("SetLimit") && allEntries.size() == 1){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(new Intent(this, CallMonitorService.class));
                 Log.d("MainActivity", "Started Foreground Service from SetLimit");
             }
-        } else if(funcCalledFrom.equals("DeleteTimeLimit") && allEntries.isEmpty()){
+        } else if(action.equals("DeleteTimeLimit") && allEntries.isEmpty()){
             Intent stopForegroundService = new Intent(this, CallMonitorService.class);
             stopService(stopForegroundService);
             Log.d("MainActivity", "Stopped Foreground Service from DeleteTimeLimit");
@@ -177,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
             int totalSeconds = (int) entry.getValue();
             int hours = totalSeconds / 3600;
             int minutes = (totalSeconds % 3600) / 60;
+            int seconds = totalSeconds % 60;
 
             // Create a horizontal layout for each entry
             LinearLayout entryLayout = new LinearLayout(this);
@@ -200,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
             number.setTypeface(Typeface.DEFAULT_BOLD);
 
             TextView time = new TextView(this);
-            time.setText(hours + " hrs " + minutes + " mins");
+            time.setText(hours + " hrs " + minutes + " mins " + seconds + " seconds");
             time.setTextSize(16);
 
             valueLayout.addView(number);
@@ -227,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteTimeLimit(String phoneNumber) {
-        SharedPreferences sharedPreferences = getSharedPreferences("time_limits", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(phoneNumber);
         editor.apply();
@@ -235,4 +245,50 @@ public class MainActivity extends AppCompatActivity {
         // Refresh UI
         updateSavedLimitsUI("DeleteTimeLimit");
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateSavedLimitsUI("Refresh");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setupStatusBarAppearance();
+    }
+
+    private void setupStatusBarAppearance() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            // Let app draw behind system bars
+            getWindow().setDecorFitsSystemWindows(false);
+
+            final View rootView = findViewById(android.R.id.content);
+
+            // Handle insets to avoid status bar overlap
+            rootView.setOnApplyWindowInsetsListener((v, insets) -> {
+                Insets systemBarsInsets = insets.getInsets(WindowInsets.Type.systemBars());
+                v.setPadding(0, systemBarsInsets.top, 0, 0); // Top padding only
+                return insets;
+            });
+
+            // Dynamically adjust status bar text/icons color based on theme
+            WindowInsetsController controller = getWindow().getInsetsController();
+            if (controller != null) {
+                boolean isDarkTheme = (getResources().getConfiguration().uiMode
+                        & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+
+                controller.setSystemBarsAppearance(
+                        isDarkTheme ? 0 : WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                );
+            }
+        }
+    }
+
 }

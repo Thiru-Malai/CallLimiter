@@ -1,5 +1,6 @@
 package com.thirumalai.calllimiter;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -29,11 +30,13 @@ public class CallMonitorService extends Service {
     private TelephonyManager telephonyManager;
     private Handler handler = new Handler();
     private Runnable endCallRunnable;
-    private int CALL_TIME_LIMIT = 5 * 1000; // 30 seconds
+    private int CALL_TIME_LIMIT = 10 * 1000; // 10 seconds
     private PhoneStateListener phoneStateListener;
     private PhoneNumberUtil phoneNumberUtil;
     private boolean isTimerRunning = false;
-    private int elapsedTime = 0; // Time in seconds
+    private int elapsedTime = 1; // Time in seconds
+    private SharedPreferences sharedPreferences;
+    private final String SHARED_PREF_NAME = "time_limits";
 
     @Override
     public void onCreate() {
@@ -54,28 +57,50 @@ public class CallMonitorService extends Service {
             @Override
             public void onCallStateChanged(int state, String phoneNumber) {
                 super.onCallStateChanged(state, phoneNumber);
+
                 Log.d("CallMonitorService", phoneNumber);
                 Phonenumber.PhoneNumber number;
                 try {
                     number = phoneNumberUtil.parse(phoneNumber, null);
-//                    number.clearCountryCode();
                     String numberWithoutCountryCode = String.valueOf(number.getNationalNumber());
                     System.out.println(numberWithoutCountryCode);
                     if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                        SharedPreferences sharedPreferences = getSharedPreferences("time_limits", MODE_PRIVATE);
+                        elapsedTime = 1;
+                        sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
                         int totalSeconds = sharedPreferences.getInt(numberWithoutCountryCode, -1);
+
+                        if(totalSeconds == 0){
+                            totalSeconds = 10;
+                        }
 
                         if(totalSeconds != -1){
                             // Adding +10 secs - timer starts once the call is made and not when the call is attended
                             CALL_TIME_LIMIT = totalSeconds * 1000 + 10000;
+                            System.out.println(CALL_TIME_LIMIT);
                             startCallTimer();
+
                             Log.d("CallMonitorService", "Call started. Starting timer.");
                         } else {
                             Log.d("callService", "number not present");
                         }
                     } else if (state == TelephonyManager.CALL_STATE_IDLE) {
                         Log.d("CallMonitorService", "Call ended. Stopping timer.");
-                        stopCallTimer();
+
+                        sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
+                        int totalSeconds = sharedPreferences.getInt(numberWithoutCountryCode, -1);
+
+                        if(totalSeconds != -1){
+                            // Update remaining time
+                            sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                            // Save the phone number as the key and time limit as the value
+                            System.out.println("TIME UPDATED " + (CALL_TIME_LIMIT/1000 - elapsedTime));
+                            editor.putInt(numberWithoutCountryCode, CALL_TIME_LIMIT / 1000 - elapsedTime);
+                            editor.apply();
+
+                            stopCallTimer();
+                        }
                     }
                 } catch (NumberParseException e) {
                     Log.e("CallMonitoringService", "error during parsing a number");
@@ -89,16 +114,12 @@ public class CallMonitorService extends Service {
     private void startCallTimer() {
         if (!isTimerRunning) {
             isTimerRunning = true;
-            elapsedTime = 0;
         }
-        endCallRunnable = new Runnable() {
-            @Override
-            public void run() {
-                endCall();
-            }
+        endCallRunnable = () -> {
+            endCall();
         };
         handler.postDelayed(endCallRunnable, CALL_TIME_LIMIT);
-        handler.post(updateRunnable); // Start updating notification
+        handler.post(updateRunnable);
     }
 
     private void stopCallTimer() {
@@ -120,8 +141,8 @@ public class CallMonitorService extends Service {
         @Override
         public void run() {
             if (isTimerRunning) {
-                updateTimerNotification();
                 elapsedTime++;
+                updateTimerNotification();
                 handler.postDelayed(this, 1000); // Repeat every second
             }
         }
@@ -150,7 +171,6 @@ public class CallMonitorService extends Service {
             Log.e("CallMonitorService", "Error ending call: " + e.getMessage());
         }
     }
-// TODO: For future release
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -170,8 +190,8 @@ public class CallMonitorService extends Service {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Call Monitor Active")
                 .setContentText("Limiting call duration")
-                .setSmallIcon(R.drawable.call_timer_transparent_foreground)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_new))
+                .setSmallIcon(R.drawable.logo___notification)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_v2))
                 .build();
     }
 
@@ -179,8 +199,8 @@ public class CallMonitorService extends Service {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Call Monitor Active")
                 .setContentText("Time Left: " + formatTime((CALL_TIME_LIMIT / 1000) - elapsedTime))
-                .setSmallIcon(R.drawable.call_timer_transparent_foreground)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_new))
+                .setSmallIcon(R.drawable.logo___notification)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_v2))
                 .setOngoing(true)
                 .build();
 
@@ -191,10 +211,17 @@ public class CallMonitorService extends Service {
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private String formatTime(int seconds) {
-        int m = seconds / 60;
+        int h = seconds / 3600;
+        int m = (seconds % 3600) / 60;
         int s = seconds % 60;
-        return String.format("%02d:%02d", m, s);
+
+        if (h > 0) {
+            return String.format("%02d:%02d:%02d", h, m, s); // hh:mm:ss
+        } else {
+            return String.format("%02d:%02d", m, s); // mm:ss
+        }
     }
 
     @Override

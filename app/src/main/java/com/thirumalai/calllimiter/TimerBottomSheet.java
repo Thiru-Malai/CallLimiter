@@ -47,7 +47,7 @@ public class TimerBottomSheet extends BottomSheetDialogFragment {
         hourPicker.setMaxValue(24);
 
         // Configure Minute Picker (0 to 55, step of 5)
-        String[] minuteValues = {"0", "5", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"};
+        String[] minuteValues = {"0", "1", "2", "3", "4", "5", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"};
         minutePicker.setMinValue(0);
         minutePicker.setMaxValue(minuteValues.length - 1);
         minutePicker.setDisplayedValues(minuteValues);
