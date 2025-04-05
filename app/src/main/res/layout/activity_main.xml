@@ -62,8 +62,9 @@
         android:id="@+id/set_limit_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cornerRadius="5dp"
-        android:text="@string/set_limit" />
+        android:layout_marginTop="5dp"
+        android:text="@string/set_limit"
+        app:cornerRadius="5dp" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/select_contact_button"
