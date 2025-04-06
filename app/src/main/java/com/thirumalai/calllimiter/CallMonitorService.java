@@ -25,18 +25,21 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class CallMonitorService extends Service {
     private static final String CHANNEL_ID = "CallMonitorChannel";
     private TelephonyManager telephonyManager;
     private Handler handler = new Handler();
     private Runnable endCallRunnable;
-    private int CALL_TIME_LIMIT = 10 * 1000; // 10 seconds
+    private int callTimeLimit = 10 * 1000; // 10 seconds
     private PhoneStateListener phoneStateListener;
     private PhoneNumberUtil phoneNumberUtil;
     private boolean isTimerRunning = false;
     private int elapsedTime = 1; // Time in seconds
     private SharedPreferences sharedPreferences;
-    private final String SHARED_PREF_NAME = "time_limits";
+    private final String SHARED_PREF_NAME = "limit_prefs";
 
     @Override
     public void onCreate() {
@@ -67,16 +70,20 @@ public class CallMonitorService extends Service {
                     if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                         elapsedTime = 1;
                         sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-                        int totalSeconds = sharedPreferences.getInt(numberWithoutCountryCode, -1);
+                        
+                        String phoneNumberData = sharedPreferences.getString(numberWithoutCountryCode, null);
+                        
+                        if(phoneNumberData != null){
+                            JSONObject jsonObject = new JSONObject(phoneNumberData);
+                            int remaining_time = jsonObject.getInt("remaining_time");
+                            
+                            if(remaining_time < 10){
+                                remaining_time = 10;
+                            }
 
-                        if(totalSeconds == 0){
-                            totalSeconds = 10;
-                        }
-
-                        if(totalSeconds != -1){
                             // Adding +10 secs - timer starts once the call is made and not when the call is attended
-                            CALL_TIME_LIMIT = totalSeconds * 1000 + 10000;
-                            System.out.println(CALL_TIME_LIMIT);
+                            callTimeLimit = remaining_time * 1000 + 10000;
+                            System.out.println(callTimeLimit);
                             startCallTimer();
 
                             Log.d("CallMonitorService", "Call started. Starting timer.");
@@ -87,23 +94,33 @@ public class CallMonitorService extends Service {
                         Log.d("CallMonitorService", "Call ended. Stopping timer.");
 
                         sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-                        int totalSeconds = sharedPreferences.getInt(numberWithoutCountryCode, -1);
+                        String phoneNumberData = sharedPreferences.getString(numberWithoutCountryCode, null);
 
-                        if(totalSeconds != -1){
+                        if(phoneNumberData != null){
                             // Update remaining time
                             sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                            // Save the phone number as the key and time limit as the value
-                            System.out.println("TIME UPDATED " + (CALL_TIME_LIMIT/1000 - elapsedTime));
-                            editor.putInt(numberWithoutCountryCode, CALL_TIME_LIMIT / 1000 - elapsedTime);
-                            editor.apply();
+                            try {
+                                JSONObject jsonObject = new JSONObject(phoneNumberData);
+                                int remainingTime =  callTimeLimit / 1000 - elapsedTime;
 
-                            stopCallTimer();
+                                jsonObject.put("remaining_time", remainingTime);
+                                
+                                editor.putString(numberWithoutCountryCode, jsonObject.toString());
+                                editor.apply();
+
+                                stopCallTimer();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
                         }
                     }
                 } catch (NumberParseException e) {
                     Log.e("CallMonitoringService", "error during parsing a number");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
             }
         };
@@ -118,7 +135,7 @@ public class CallMonitorService extends Service {
         endCallRunnable = () -> {
             endCall();
         };
-        handler.postDelayed(endCallRunnable, CALL_TIME_LIMIT);
+        handler.postDelayed(endCallRunnable, callTimeLimit);
         handler.post(updateRunnable);
     }
 
@@ -198,7 +215,7 @@ public class CallMonitorService extends Service {
     private void updateTimerNotification() {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Call Monitor Active")
-                .setContentText("Time Left: " + formatTime((CALL_TIME_LIMIT / 1000) - elapsedTime))
+                .setContentText("Time Left: " + formatTime((callTimeLimit / 1000) - elapsedTime))
                 .setSmallIcon(R.drawable.logo___notification)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_v2))
                 .setOngoing(true)
