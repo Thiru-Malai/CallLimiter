@@ -1,10 +1,11 @@
 package com.thirumalai.calllimiter;
 
+import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL;
+
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -38,22 +39,22 @@ public class CallMonitorService extends Service {
     private PhoneNumberUtil phoneNumberUtil;
     private boolean isTimerRunning = false;
     private int elapsedTime = 1; // Time in seconds
-    private SharedPreferences sharedPreferences;
-    private final String SHARED_PREF_NAME = "limit_prefs";
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        PreferenceHelper.init(this);
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-
         phoneNumberUtil = PhoneNumberUtil.getInstance();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         createNotificationChannel();
-        startForeground(1, getNotification());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(1, getNotification(), FOREGROUND_SERVICE_TYPE_PHONE_CALL);
+        }
 
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         phoneStateListener = new PhoneStateListener() {
@@ -69,9 +70,8 @@ public class CallMonitorService extends Service {
                     System.out.println(numberWithoutCountryCode);
                     if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                         elapsedTime = 1;
-                        sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-                        
-                        String phoneNumberData = sharedPreferences.getString(numberWithoutCountryCode, null);
+
+                        String phoneNumberData = PreferenceHelper.getContact(numberWithoutCountryCode);
                         
                         if(phoneNumberData != null){
                             JSONObject jsonObject = new JSONObject(phoneNumberData);
@@ -93,22 +93,22 @@ public class CallMonitorService extends Service {
                     } else if (state == TelephonyManager.CALL_STATE_IDLE) {
                         Log.d("CallMonitorService", "Call ended. Stopping timer.");
 
-                        sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-                        String phoneNumberData = sharedPreferences.getString(numberWithoutCountryCode, null);
+                        String phoneNumberData = PreferenceHelper.getContact(numberWithoutCountryCode);
 
                         if(phoneNumberData != null){
                             // Update remaining time
-                            sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
 
                             try {
                                 JSONObject jsonObject = new JSONObject(phoneNumberData);
                                 int remainingTime =  callTimeLimit / 1000 - elapsedTime;
 
+                                if(remainingTime < 0){
+                                    remainingTime = 0;
+                                }
+
                                 jsonObject.put("remaining_time", remainingTime);
                                 
-                                editor.putString(numberWithoutCountryCode, jsonObject.toString());
-                                editor.apply();
+                                PreferenceHelper.saveContact(numberWithoutCountryCode, jsonObject.toString());
 
                                 stopCallTimer();
                             } catch (Exception e) {

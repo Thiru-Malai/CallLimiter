@@ -2,15 +2,14 @@ package com.thirumalai.calllimiter;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.graphics.Insets;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,14 +29,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.color.DynamicColors;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -48,8 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private int selectedHour = -1, selectedMinute = -1;
     private TextInputEditText phoneNumberField;
     boolean isPhoneAvailable = false, isTimeAvailable = false;
-    private SharedPreferences sharedPreferences;
-    private final String SHARED_PREF_NAME = "limit_prefs";
+    private static final int NOTIFICATION_PERMISSION_CODE = 1001;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,25 +58,25 @@ public class MainActivity extends AppCompatActivity {
 
         setupStatusBarAppearance();
 
+        PreferenceHelper.init(this);
+
         Button timeLimitButton = findViewById(R.id.set_time_limit_button);
         setLimit = findViewById(R.id.set_limit_button);
         selectFromContacts = findViewById(R.id.select_contact_button);
         phoneNumberField = findViewById(R.id.phone_number_input);
 
-        sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-
         // Check for last updated date change
         checkAndSetInitialDate();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            requestNecessaryPermissions();
+        }
 
         // Fetch Stored Values
         try {
             updateSavedLimitsUI("LoadOnCreate");
         } catch (JSONException e) {
             throw new RuntimeException(e);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            requestNecessaryPermissions();
         }
 
 //        Start foreground service
@@ -106,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
                         selectedHour = hours;
                         selectedMinute = minutes;
                         setLimit.setText("SET LIMIT - " + hours + " hrs " + minutes + " mins");
-                        Toast.makeText(MainActivity.this, hours + " " + minutes, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -127,8 +126,6 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 int totalSeconds = (selectedHour * 3600) + (selectedMinute * 60);
-                sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
 
                 // Save the phone number as the key and time limit as the value
                 JSONObject jsonObject = new JSONObject();
@@ -141,8 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                editor.putString(phoneNumber, jsonObject.toString());
-                editor.apply();
+                PreferenceHelper.saveContact(phoneNumber, jsonObject.toString());
 
                 isPhoneAvailable = false;
                 phoneNumberField.setText(null);
@@ -165,30 +161,38 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.P)
     private void requestNecessaryPermissions() {
         // Request necessary permissions
-        ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.READ_CALL_LOG,
-                Manifest.permission.CALL_PHONE,
-                Manifest.permission.ANSWER_PHONE_CALLS,
-                Manifest.permission.FOREGROUND_SERVICE,
-        }, 1);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ANSWER_PHONE_CALLS) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED)
-        {
-            requestPermissions(new String[] {Manifest.permission.FOREGROUND_SERVICE}, 1);
+        List<String> permissionsNeeded = new ArrayList<>();
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+                != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            ActivityCompat.requestPermissions(this, new String[] {
-                    Manifest.permission.POST_NOTIFICATIONS
-            }, 1);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG)
+                != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.READ_CALL_LOG);
+        }
 
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
-                requestPermissions(new String[] {Manifest.permission.POST_NOTIFICATIONS}, 1);
-            }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.CALL_PHONE);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ANSWER_PHONE_CALLS)
+                != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.ANSWER_PHONE_CALLS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.POST_NOTIFICATIONS);
+        }
+
+        if (!permissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this,
+                    permissionsNeeded.toArray(new String[0]),
+                    1);
         }
     }
 
@@ -196,8 +200,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout savedLimitsLayout = findViewById(R.id.saved_limits_layout);
         savedLimitsLayout.removeAllViews(); // Clear previous entries
 
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-        Map<String, ?> allEntries = sharedPreferences.getAll();
+        Map<String, ?> allEntries = PreferenceHelper.getAllContact();
 
         if(action.equals("LoadOnCreate") && !allEntries.isEmpty()){
             // Start foreground service
@@ -262,6 +265,8 @@ public class MainActivity extends AppCompatActivity {
         number.setText(phoneNumber);
         number.setTextSize(20);
         number.setTypeface(Typeface.DEFAULT_BOLD);
+        number.setTag("number");
+//        number.setId(View.generateViewId());
 
         TextView time = new TextView(this);
         time.setText(hours + " hrs " + minutes + " mins " + seconds + " seconds");
@@ -269,6 +274,76 @@ public class MainActivity extends AppCompatActivity {
 
         valueLayout.addView(number);
         valueLayout.addView(time);
+
+        valueLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                TextView numberView = view.findViewWithTag("number");
+                String listNumber = numberView.getText().toString();
+                TimerBottomSheet bottomSheet = new TimerBottomSheet(new TimerBottomSheet.OnTimeSelectedListener() {
+                    @Override
+                    public void onTimeSelected(int hours, int minutes) {
+                        System.out.println(hours + " " + minutes);
+                        selectedHour = hours;
+                        selectedMinute = minutes;
+
+                        String phoneNumberData = PreferenceHelper.getContact(listNumber);
+
+                        if(phoneNumberData != null){
+                            // Update remaining time
+                            try {
+                                JSONObject jsonObject = updateLimit(phoneNumberData);
+                                PreferenceHelper.saveContact(listNumber, jsonObject.toString());
+
+                                updateSavedLimitsUI("Refresh");
+
+                                // Resetting time
+                                selectedHour = -1;
+                                selectedMinute = -1;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+
+                    @NonNull
+                    private JSONObject updateLimit(String phoneNumberData) throws JSONException {
+                        JSONObject jsonObject = new JSONObject(phoneNumberData);
+                        int remainingTime =  jsonObject.getInt("remaining_time");
+                        int totalTime = jsonObject.getInt("limit");
+                        int totalSeconds = (selectedHour * 3600) + (selectedMinute * 60);
+                        if(totalTime == remainingTime){
+                            jsonObject.put("limit", totalSeconds);
+                            jsonObject.put("remaining_time", totalSeconds);
+                            return jsonObject;
+                        } else if(totalSeconds == remainingTime){
+                            jsonObject.put("limit", totalSeconds);
+                            jsonObject.put("remaining_time", totalSeconds);
+                            return jsonObject;
+                        } else if(totalSeconds > totalTime){
+                            jsonObject.put("limit", totalSeconds);
+                            jsonObject.put("remaining_time", totalSeconds - totalTime + remaining_time);
+                            return jsonObject;
+                        } else if(totalSeconds < totalTime){
+                            if(totalSeconds - totalTime + remaining_time <= 0){
+                                jsonObject.put("limit", totalSeconds);
+                                jsonObject.put("remaining_time", 0);
+                                return jsonObject;
+                            }
+                        }
+                        return jsonObject;
+                    }
+
+                    @Override
+                    public void onTimerReset() {
+                        isTimeAvailable = false;
+                    }
+                });
+                bottomSheet.show(getSupportFragmentManager(), "TimerBottomSheet");
+                return false;
+            }
+        });
 
         // Create a delete button
         MaterialButton deleteButton = new MaterialButton(this);
@@ -296,10 +371,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteTimeLimit(String phoneNumber) throws JSONException {
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(phoneNumber);
-        editor.apply();
+        PreferenceHelper.removeContact(phoneNumber);
 
         // Refresh UI
         updateSavedLimitsUI("DeleteTimeLimit");
@@ -356,10 +428,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkAndSetInitialDate() {
         String currentDate = getTodayDate();
-        String lastSavedDate = PreferenceHelper.getLastUpdatedDate(this);
+        String lastSavedDate = PreferenceHelper.getLastUpdatedDate();
 
         if (lastSavedDate.isEmpty()) {
-            PreferenceHelper.saveLastUpdatedDate(this, currentDate);
+            PreferenceHelper.saveLastUpdatedDate(currentDate);
         }
     }
 

@@ -19,15 +19,11 @@ import java.util.Map;
 import java.util.Objects;
 
 public class TimeChangeReceiver extends BroadcastReceiver {
-
-    private final String SHARED_PREF_NAME = "limit_prefs";
-    private static final String LAST_UPDATED_DATE = "last_updated_key";
-    private static SharedPreferences sharedPreferences;
-
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
 
     public void onReceive(Context context, Intent intent) {
+        PreferenceHelper.init(context);
         resetTime(context);
         Log.d("TimeChangeReceiver", "Time Reset");
     }
@@ -35,7 +31,7 @@ public class TimeChangeReceiver extends BroadcastReceiver {
     public void resetTime(Context context){
         updateDate(context);
 
-        Map<String, ?> all = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE).getAll();
+        Map<String, ?> all = PreferenceHelper.getAllContact();
         for (String phoneNumber : all.keySet()) {
             try{
                 JSONObject jsonObject = new JSONObject((String) Objects.requireNonNull(all.get(phoneNumber)));
@@ -43,29 +39,19 @@ public class TimeChangeReceiver extends BroadcastReceiver {
                 int limit = jsonObject.getInt("limit");
                 jsonObject.put("remaining_time", limit);
 
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                editor.putString(phoneNumber, jsonObject.toString());
-                editor.apply();
+                PreferenceHelper.saveContact(phoneNumber, jsonObject.toString());
             } catch (Exception e){
                 e.printStackTrace();
             }
         }
-//        return result;
     }
 
     private void updateDate(Context context) {
-        String LAST_UPDATED_PREF = "last_updated_pref";
         String currentDate = getTodayDate();
+        String last_updated = PreferenceHelper.getLastUpdatedDate();
 
-        sharedPreferences = context.getSharedPreferences(LAST_UPDATED_PREF, MODE_PRIVATE);
-        String last_updated = sharedPreferences.getString(LAST_UPDATED_DATE, "");
-
-        if (last_updated.isEmpty() && !last_updated.equals(currentDate)) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                editor.putString(LAST_UPDATED_DATE, currentDate);
-                editor.apply();
+        if (!last_updated.isEmpty() && !last_updated.equals(currentDate)) {
+                PreferenceHelper.saveLastUpdatedDate(currentDate);;
         }
     }
 

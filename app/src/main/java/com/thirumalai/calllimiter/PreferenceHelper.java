@@ -1,50 +1,54 @@
 package com.thirumalai.calllimiter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class PreferenceHelper {
-    private static final String LAST_UPDATED_PREF = "last_updated_pref";
-    private static final String LAST_UPDATED_DATE = "last_updated_key";
+    private static final String CONTACT_DATA_PREF = "contact_data_store";
+    private static final String LAST_UPDATED_PREF = "last_updated_store";
+    private static final String LAST_UPDATED_KEY = "last_updated_key";
     private static final String REMAINING_TIME = "remaining_time";
     private static final String LIMIT = "limit";
+    private static SharedPreferences contactDataStore, lastUpdatedStore;
+    private static SharedPreferences.Editor contactDataEditor, lastUpdatedEditor;
 
-
-    public static void saveLastUpdatedDate(MainActivity context, String date) {
-        context.getSharedPreferences(LAST_UPDATED_PREF, Context.MODE_PRIVATE)
-                .edit()
-                .putString(LAST_UPDATED_DATE, date)
-                .apply();
+    public static void init(Context context) {
+        if (contactDataStore == null) {
+            contactDataStore = context.getApplicationContext().getSharedPreferences(CONTACT_DATA_PREF, Context.MODE_PRIVATE);
+            contactDataEditor = contactDataStore.edit();
+        }
+        if(lastUpdatedStore == null){
+            lastUpdatedStore = context.getApplicationContext().getSharedPreferences(LAST_UPDATED_PREF, Context.MODE_PRIVATE);
+            lastUpdatedEditor = lastUpdatedStore.edit();
+        }
     }
 
-    public static String getLastUpdatedDate(MainActivity context) {
-        return context.getSharedPreferences(LAST_UPDATED_PREF, Context.MODE_PRIVATE)
-                .getString(LAST_UPDATED_DATE, "");
+    public static void saveLastUpdatedDate(String date) {
+        lastUpdatedEditor.putString(LAST_UPDATED_KEY, date).apply();
     }
 
-//    public static void saveContactLimit(Context context, String number, int limitInSeconds) {
-//        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-//                .edit()
-//                .putInt(LIMIT_PREFIX + number, limitInSeconds)
-//                .apply();
-//    }
-//
-//    public static int getContactLimit(Context context, String number) {
-//        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-//                .getInt(LIMIT_PREFIX + number, 0);
-//    }
+    public static String getLastUpdatedDate() {
+        return lastUpdatedStore.getString(LAST_UPDATED_KEY, "");
+    }
 
-//    public static Map<String, ?> getAllContactLimits(Context context) {
-//        Map<String, ?> all = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getAll();
-//        Map<String, String> result = new HashMap<>();
-//        for (String key : all.keySet()) {
-//            result.put(key, (String) all.get(key));
-//        }
-//        return result;
-//    }
-//
+    public static void saveContact(String phoneNumber, String data) {
+        contactDataEditor.putString(phoneNumber, data).apply();
+    }
+
+    public static void removeContact(String phoneNumber) {
+        contactDataEditor.remove(phoneNumber).apply();
+    }
+
+    public static String getContact(String number) {
+        return contactDataStore.getString(number, null);
+    }
+
+    public static Map<String, ?> getAllContact() {
+        return contactDataStore.getAll();
+    }
+
 //    public static Map<String, ?> setAllContactLimits(Context context) {
 //        Map<String, ?> all = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getAll();
 //        Map<String, String> result = new HashMap<>();
