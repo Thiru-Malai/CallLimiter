@@ -49,6 +49,10 @@ public class PreferenceHelper {
         return contactDataStore.getAll();
     }
 
+    public static int getAllContactSize(){
+        return  contactDataStore.getAll().size();
+    }
+
 //    public static Map<String, ?> setAllContactLimits(Context context) {
 //        Map<String, ?> all = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getAll();
 //        Map<String, String> result = new HashMap<>();
