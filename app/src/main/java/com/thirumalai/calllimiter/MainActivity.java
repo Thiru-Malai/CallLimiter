@@ -183,6 +183,11 @@ public class MainActivity extends AppCompatActivity {
             permissionsNeeded.add(Manifest.permission.ANSWER_PHONE_CALLS);
         }
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_BOOT_COMPLETED)
+                != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.ANSWER_PHONE_CALLS);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                         != PackageManager.PERMISSION_GRANTED) {
