@@ -23,13 +23,13 @@ public class BootReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int activeLimitContactSize = PreferenceHelper.getAllContactSize();
             if(activeLimitContactSize > 0){
-                OneTimeWorkRequest workRequest =
-                        new OneTimeWorkRequest.Builder(CallMonitorWorker.class)
-                                .setInitialDelay(10, TimeUnit.SECONDS) // delay avoids crash
-                                .build();
-                WorkManager.getInstance(context).enqueue(workRequest);
-//                context.startForegroundService(new Intent(context, CallMonitorService.class));
-//                Log.d("BootReceiver", "Started Foreground Service from Boot Receiver");
+//                OneTimeWorkRequest workRequest =
+//                        new OneTimeWorkRequest.Builder(CallMonitorWorker.class)
+//                                .setInitialDelay(10, TimeUnit.SECONDS) // delay avoids crash
+//                                .build();
+//                WorkManager.getInstance(context).enqueue(workRequest);
+                context.startService(new Intent(context, CallMonitorService.class));
+                Log.d("BootReceiver", "Started Foreground Service from Boot Receiver");
             }
         }
     }
