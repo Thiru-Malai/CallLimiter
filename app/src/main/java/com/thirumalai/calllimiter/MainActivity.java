@@ -3,9 +3,11 @@ package com.thirumalai.calllimiter;
 import android.Manifest;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Insets;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -14,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,6 +33,8 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private TextInputEditText phoneNumberField;
     boolean isPhoneAvailable = false, isTimeAvailable = false;
     private static final int NOTIFICATION_PERMISSION_CODE = 1001;
+    private static final int PICK_CONTACT_REQUEST = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -154,6 +160,14 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
+            }
+        });
+
+        selectFromContacts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                startActivityForResult(intent, PICK_CONTACT_REQUEST);
             }
         });
     }
@@ -442,6 +456,58 @@ public class MainActivity extends AppCompatActivity {
 
     private String getTodayDate(){
         return new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
+
+        if (requestCode == PICK_CONTACT_REQUEST && resultCode == RESULT_OK) {
+            android.net.Uri contactUri = data.getData();
+
+            String[] projection = {
+                    ContactsContract.CommonDataKinds.Phone.NUMBER,
+                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+            };
+
+            assert contactUri != null;
+            try (Cursor cursor = getContentResolver().query(contactUri, projection, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                    int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+
+                    String phoneNumber = cursor.getString(numberIndex);
+                    String name = cursor.getString(nameIndex);
+
+                    String numberWithoutCountryCode;
+
+                    if(phoneNumber.startsWith("+")){
+                        numberWithoutCountryCode = String.valueOf(phoneNumberUtil.parse(phoneNumber, null).getNationalNumber());
+                    }
+                    else {
+                        numberWithoutCountryCode = cleanLocalPhoneNumber(phoneNumber);
+                    }
+
+                    phoneNumberField.setText(numberWithoutCountryCode);
+                }
+            } catch (Exception e) {
+                if(e.toString().contains("Error type: INVALID_COUNTRY_CODE.")){
+                    Toast.makeText(this, "Pick valid phone number.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Error please try again.", Toast.LENGTH_SHORT).show();
+                }
+//                throw new RuntimeException(e);
+            }
+        }
+    }
+
+     private String cleanLocalPhoneNumber(String rawNumber) {
+        if (rawNumber == null) return "";
+
+        // Remove all characters except digits
+        return rawNumber.replaceAll("[^\\d]", "");
     }
 
 }
