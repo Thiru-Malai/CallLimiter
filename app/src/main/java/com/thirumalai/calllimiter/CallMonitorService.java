@@ -80,9 +80,12 @@ public class CallMonitorService extends Service {
                 Log.d("CallMonitorService", phoneNumber);
                 Phonenumber.PhoneNumber number;
                 try {
-                    number = phoneNumberUtil.parse(phoneNumber, null);
-                    String numberWithoutCountryCode = String.valueOf(number.getNationalNumber());
-                    System.out.println(numberWithoutCountryCode);
+                    String numberWithoutCountryCode = phoneNumber;
+                    if(phoneNumber.startsWith("+")){
+                        number = phoneNumberUtil.parse(phoneNumber, null);
+                        numberWithoutCountryCode = String.valueOf(number.getNationalNumber());
+                        System.out.println(numberWithoutCountryCode);
+                    }
                     if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                         elapsedTime = 1;
 
