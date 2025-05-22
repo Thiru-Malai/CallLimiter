@@ -109,22 +109,23 @@ public class CallMonitorService extends Service {
                             Log.d("callService", "number not present");
                         }
                     } else if (state == TelephonyManager.CALL_STATE_IDLE) {
-                        Log.d("CallMonitorService", "Call ended. Stopping timer.");
-
-                        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                        if(vibrator != null && vibrator.hasVibrator()){
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                VibrationEffect vibrationEffect = VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE);
-                                vibrator.vibrate(vibrationEffect);
-                            }
-                            else{
-                                vibrator.vibrate(200);
-                            }
-                        }
+                        Log.d("CallMonitorService", "Call State Idle Triggered");
 
                         String phoneNumberData = PreferenceHelper.getContact(numberWithoutCountryCode);
-
                         if(phoneNumberData != null){
+                            Log.d("CallMonitorService", "Call ended. Stopping timer.");
+
+                            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            if(vibrator != null && vibrator.hasVibrator()){
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    VibrationEffect vibrationEffect = VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE);
+                                    vibrator.vibrate(vibrationEffect);
+                                }
+                                else{
+                                    vibrator.vibrate(200);
+                                }
+                            }
+
                             // Update remaining time
 
                             try {
@@ -136,7 +137,7 @@ public class CallMonitorService extends Service {
                                 }
 
                                 jsonObject.put("remaining_time", remainingTime);
-                                
+
                                 PreferenceHelper.saveContact(numberWithoutCountryCode, jsonObject.toString());
 
                                 if(isTimerRunning){
