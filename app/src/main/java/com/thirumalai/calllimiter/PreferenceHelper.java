@@ -8,11 +8,13 @@ import java.util.Map;
 public class PreferenceHelper {
     private static final String CONTACT_DATA_PREF = "contact_data_store";
     private static final String LAST_UPDATED_PREF = "last_updated_store";
+    private static final String FIRST_TIME_PREF = "first_time_store";
     private static final String LAST_UPDATED_KEY = "last_updated_key";
+    private static final String FIRST_TIME_KEY = "first_time_key";
     private static final String REMAINING_TIME = "remaining_time";
     private static final String LIMIT = "limit";
-    private static SharedPreferences contactDataStore, lastUpdatedStore;
-    private static SharedPreferences.Editor contactDataEditor, lastUpdatedEditor;
+    private static SharedPreferences contactDataStore, lastUpdatedStore, firstTimeStore;
+    private static SharedPreferences.Editor contactDataEditor, lastUpdatedEditor, firstTimeEditor;
 
     public static void init(Context context) {
         if (contactDataStore == null) {
@@ -22,6 +24,10 @@ public class PreferenceHelper {
         if(lastUpdatedStore == null){
             lastUpdatedStore = context.getApplicationContext().getSharedPreferences(LAST_UPDATED_PREF, Context.MODE_PRIVATE);
             lastUpdatedEditor = lastUpdatedStore.edit();
+        }
+        if(firstTimeStore == null){
+            firstTimeStore = context.getApplicationContext().getSharedPreferences(FIRST_TIME_PREF, Context.MODE_PRIVATE);
+            firstTimeEditor = firstTimeStore.edit();
         }
     }
 
@@ -51,6 +57,14 @@ public class PreferenceHelper {
 
     public static int getAllContactSize(){
         return  contactDataStore.getAll().size();
+    }
+
+    public static boolean isFirstTimeLogin(){
+        return firstTimeStore.getBoolean(FIRST_TIME_KEY, true);
+    }
+
+    public static void setOnboardingCompleted(){
+        firstTimeEditor.putBoolean(FIRST_TIME_KEY, false).apply();
     }
 
 //    public static Map<String, ?> setAllContactLimits(Context context) {

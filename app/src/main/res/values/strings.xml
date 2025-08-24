@@ -5,4 +5,15 @@
     <string name="limit_talk_for">Limit talk for....</string>
     <string name="set_limit">SET LIMIT</string>
     <string name="select_from_contacts">Select from contacts</string>
+    <string name="permissions">Permissions</string>
+    <string name="app_permissions_amp_your_privacy"><![CDATA[App Permissions & Your Privacy]]></string>
+    <string name="these_permissions_are_only_used_to_apply_your_call_limits_your_privacy_is_our_top_priority_the_app_works_fully_offline_does_not_use_the_internet_and_no_data_is_ever_shared">These permissions are only used to apply your call limits. Your privacy is our top priority — the app works fully offline, does not use the internet, and no data is ever shared.</string>
+    <string name="permission_1">Detects when you are on a call so limits can be applied.</string>
+    <string name="permission_2">Needed to apply time limits for the contacts you choose.</string>
+    <string name="permission_3">Lets you pick specific contacts to set call limits for.</string>
+    <string name="permission_4">Allows the app to automatically end a call once the limit is reached.</string>
+    <string name="permission_5">Keeps you aware with a small notification when the app is active.</string>
+    <string name="permission_6">Ensures the app keeps running in the background so limits are enforced.</string>
+    <string name="permission_7">Keeps your call limits active even after restarting your phone.</string>
+    <string name="permission_8">Provides gentle vibration alerts before a call limit is reached.</string>
 </resources>

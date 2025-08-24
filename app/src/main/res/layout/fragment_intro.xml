@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="40dp"
+    android:gravity="center">
+
+    <!-- App Logo -->
+    <ImageView
+        android:id="@+id/imageLogo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/logo___notification"
+        android:contentDescription="@string/app_name"
+        android:tint="?attr/colorPrimary"
+        android:layout_marginBottom="40dp"/>
+
+    <!-- App Name -->
+    <TextView
+        android:id="@+id/textAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="38sp"
+        android:fontFamily="@font/alegreya_semibold"
+        android:letterSpacing="0.08"
+        android:layout_marginBottom="28dp"/>
+
+    <!-- About Description -->
+    <TextView
+        android:id="@+id/textAboutApp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Take control of your phone calls by setting duration limits and managing your time more efficiently."
+        android:textSize="18sp"
+        android:lineSpacingExtra="8dp"
+        android:textAlignment="center"/>
+
+</LinearLayout>

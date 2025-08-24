@@ -60,11 +60,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        setupStatusBarAppearance();
 
         PreferenceHelper.init(this);
+
+        boolean isFirstTimeLogin = PreferenceHelper.isFirstTimeLogin();
+
+        if(isFirstTimeLogin){
+            startActivity(new Intent(this, OnboardingActivity.class));
+            finish();
+            return;
+        }
+
+        setContentView(R.layout.activity_main);
+        setupStatusBarAppearance();
 
         Button timeLimitButton = findViewById(R.id.set_time_limit_button);
         setLimit = findViewById(R.id.set_limit_button);
