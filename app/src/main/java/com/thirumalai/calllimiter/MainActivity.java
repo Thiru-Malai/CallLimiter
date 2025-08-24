@@ -338,26 +338,25 @@ public class MainActivity extends AppCompatActivity {
                     private JSONObject updateLimit(String phoneNumberData) throws JSONException {
                         JSONObject jsonObject = new JSONObject(phoneNumberData);
                         int remainingTime =  jsonObject.getInt("remaining_time");
-                        int totalTime = jsonObject.getInt("limit");
-                        int totalSeconds = (selectedHour * 3600) + (selectedMinute * 60);
-                        if(totalTime == remainingTime){
-                            jsonObject.put("limit", totalSeconds);
-                            jsonObject.put("remaining_time", totalSeconds);
+                        int limit = jsonObject.getInt("limit");
+                        int updatedLimit = (selectedHour * 3600) + (selectedMinute * 60);
+                        if(limit == remainingTime){
+                            jsonObject.put("limit", updatedLimit);
+                            jsonObject.put("remaining_time", updatedLimit);
                             return jsonObject;
-                        } else if(totalSeconds == remainingTime){
-                            jsonObject.put("limit", totalSeconds);
-                            jsonObject.put("remaining_time", totalSeconds);
+                        } else if(updatedLimit == remainingTime){
+                            jsonObject.put("limit", updatedLimit);
+                            jsonObject.put("remaining_time", updatedLimit);
                             return jsonObject;
-                        } else if(totalSeconds > totalTime){
-                            jsonObject.put("limit", totalSeconds);
-                            jsonObject.put("remaining_time", totalSeconds - totalTime + remaining_time);
+                        } else if(remaining_time >= updatedLimit){
+                            jsonObject.put("limit", updatedLimit);
+                            jsonObject.put("remaining_time", updatedLimit);
                             return jsonObject;
-                        } else if(totalSeconds < totalTime){
-                            if(totalSeconds - totalTime + remaining_time <= 0){
-                                jsonObject.put("limit", totalSeconds);
-                                jsonObject.put("remaining_time", 0);
-                                return jsonObject;
-                            }
+                        } else if(limit < updatedLimit){
+                            int newTime = updatedLimit - limit + remaining_time;
+                            jsonObject.put("limit", updatedLimit);
+                            jsonObject.put("remaining_time", newTime);
+                            return jsonObject;
                         }
                         return jsonObject;
                     }
