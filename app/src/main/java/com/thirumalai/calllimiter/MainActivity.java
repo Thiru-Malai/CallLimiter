@@ -24,10 +24,13 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.pm.PackageManager;
+
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     boolean isPhoneAvailable = false, isTimeAvailable = false;
     private static final int NOTIFICATION_PERMISSION_CODE = 1001;
     private static final int PICK_CONTACT_REQUEST = 1;
+    private ImageView settings;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
         PreferenceHelper.init(this);
 
         boolean isFirstTimeLogin = PreferenceHelper.isFirstTimeLogin();
-
+        String selectedTheme = PreferenceHelper.getTheme();
+        setTheme(selectedTheme);
         if(isFirstTimeLogin){
             startActivity(new Intent(this, OnboardingActivity.class));
             finish();
@@ -78,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         setLimit = findViewById(R.id.set_limit_button);
         selectFromContacts = findViewById(R.id.select_contact_button);
         phoneNumberField = findViewById(R.id.phone_number_input);
-
+        settings = findViewById(R.id.settings_button);
         // Check for last updated date change
         checkAndSetInitialDate();
 
@@ -176,6 +181,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
                 startActivityForResult(intent, PICK_CONTACT_REQUEST);
+            }
+        });
+
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, Settings.class);
+                startActivity(intent);
             }
         });
     }
@@ -517,4 +530,16 @@ public class MainActivity extends AppCompatActivity {
         return rawNumber.replaceAll("[^\\d]", "");
     }
 
+    private void setTheme(String selectedTheme){
+        switch(selectedTheme){
+            case "Light":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            break;
+            case "Dark":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            break;
+            default:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        }
+    }
 }

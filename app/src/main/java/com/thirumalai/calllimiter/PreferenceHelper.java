@@ -13,8 +13,10 @@ public class PreferenceHelper {
     private static final String FIRST_TIME_KEY = "first_time_key";
     private static final String REMAINING_TIME = "remaining_time";
     private static final String LIMIT = "limit";
-    private static SharedPreferences contactDataStore, lastUpdatedStore, firstTimeStore;
-    private static SharedPreferences.Editor contactDataEditor, lastUpdatedEditor, firstTimeEditor;
+    private static final String SETTINGS_PREF = "settings_store";
+    private static final String THEME_KEY = "theme_key";
+    private static SharedPreferences contactDataStore, lastUpdatedStore, firstTimeStore, settingsStore;
+    private static SharedPreferences.Editor contactDataEditor, lastUpdatedEditor, firstTimeEditor, settingsEditor;
 
     public static void init(Context context) {
         if (contactDataStore == null) {
@@ -28,6 +30,10 @@ public class PreferenceHelper {
         if(firstTimeStore == null){
             firstTimeStore = context.getApplicationContext().getSharedPreferences(FIRST_TIME_PREF, Context.MODE_PRIVATE);
             firstTimeEditor = firstTimeStore.edit();
+        }
+        if(settingsStore == null){
+            settingsStore = context.getApplicationContext().getSharedPreferences(SETTINGS_PREF, Context.MODE_PRIVATE);
+            settingsEditor = settingsStore.edit();
         }
     }
 
@@ -65,6 +71,14 @@ public class PreferenceHelper {
 
     public static void setOnboardingCompleted(){
         firstTimeEditor.putBoolean(FIRST_TIME_KEY, false).apply();
+    }
+
+    public static void saveTheme(String theme){
+        settingsEditor.putString(THEME_KEY, theme).apply();
+    }
+
+    public static String getTheme(){
+        return settingsStore.getString(THEME_KEY, "System");
     }
 
 //    public static Map<String, ?> setAllContactLimits(Context context) {

@@ -16,4 +16,5 @@
     <string name="permission_6">Ensures the app keeps running in the background so limits are enforced.</string>
     <string name="permission_7">Keeps your call limits active even after restarting your phone.</string>
     <string name="permission_8">Provides gentle vibration alerts before a call limit is reached.</string>
+    <string name="settings">Settings</string>
 </resources>

@@ -6,13 +6,30 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/textView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/alegreya_semibold"
-        android:text="@string/limit"
-        android:textSize="30sp" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/alegreya_semibold"
+            android:text="@string/limit"
+            android:layout_weight="0.9"
+            android:textSize="30sp" />
+
+        <ImageView
+            android:id="@+id/settings_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.1"
+            android:contentDescription="@string/settings"
+            android:src="@drawable/settings_24px" />
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/textView2"
