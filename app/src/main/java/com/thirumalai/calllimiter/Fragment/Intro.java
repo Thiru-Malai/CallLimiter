@@ -14,7 +14,7 @@ import com.thirumalai.calllimiter.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Intro#newInstance} factory method to
+ * Use the {@link Intro #newInstance} factory method to
  * create an instance of this fragment.
  */
 public class Intro extends Fragment {
