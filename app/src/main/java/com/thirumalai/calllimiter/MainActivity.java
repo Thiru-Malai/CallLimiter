@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
         boolean isFirstTimeLogin = PreferenceHelper.isFirstTimeLogin();
         String selectedTheme = PreferenceHelper.getTheme();
         setTheme(selectedTheme);
-        if(isFirstTimeLogin){
+        if(isFirstTimeLogin) {
+            PreferenceHelper.saveBufferTime(10);
             startActivity(new Intent(this, OnboardingActivity.class));
             finish();
             return;

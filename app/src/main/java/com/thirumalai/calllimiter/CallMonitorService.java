@@ -94,9 +94,9 @@ public class CallMonitorService extends Service {
                         if(phoneNumberData != null){
                             JSONObject jsonObject = new JSONObject(phoneNumberData);
                             int remaining_time = jsonObject.getInt("remaining_time");
-                            
+                            int bufferTime = PreferenceHelper.getBufferTime();
                             if(remaining_time < 10){
-                                remaining_time = 10;
+                                remaining_time = bufferTime;
                             }
 
                             // Adding +10 secs - timer starts once the call is made and not when the call is attended

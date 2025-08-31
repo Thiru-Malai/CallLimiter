@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -20,10 +21,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import org.w3c.dom.Text;
 
+import java.util.Arrays;
+
 public class Settings extends AppCompatActivity {
     private LinearLayout layoutTheme;
-    private TextView selectedThemeText;
+    private TextView selectedThemeText, bufferValueText;
     private ImageView backBtn;
+    private SeekBar bufferBar;
+    private final int[] BUFFER_VALUES = {10, 20, 30, 60, 120, 180, 240, 300};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +46,21 @@ public class Settings extends AppCompatActivity {
         selectedThemeText = findViewById(R.id.theme_text);
         backBtn = findViewById(R.id.back_btn);
         layoutTheme = findViewById(R.id.theme_layout);
+        bufferBar = findViewById(R.id.emergency_buffer_time_seek_bar);
+        bufferValueText = findViewById(R.id.emergency_buffer_time_text);
+
+        int bufferTime = PreferenceHelper.getBufferTime();
+        bufferBar.setMax(BUFFER_VALUES.length - 1);
+        int index = 0;
+        for(int i = 0; i < BUFFER_VALUES.length; i++){
+            if(BUFFER_VALUES[i] == bufferTime){
+                index = i;
+            }
+        }
 
         selectedThemeText.setText(PreferenceHelper.getTheme());
-
+        bufferBar.setProgress(index);
+        bufferValueText.setText(formatBufferTime(bufferTime));
         layoutTheme.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,6 +74,26 @@ public class Settings extends AppCompatActivity {
                 Intent intent = new Intent(Settings.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+            }
+        });
+
+        bufferBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                int selectedValue = BUFFER_VALUES[progress];
+                bufferValueText.setText(formatBufferTime(selectedValue));
+
+                PreferenceHelper.saveBufferTime(selectedValue);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
     }
@@ -143,5 +180,14 @@ public class Settings extends AppCompatActivity {
         });
 
         bottomSheetDialog.show();
+    }
+
+    private String formatBufferTime(int seconds) {
+        if (seconds < 60) {
+            return seconds + " s";
+        } else {
+            int minutes = seconds / 60;
+            return minutes + " min";
+        }
     }
 }

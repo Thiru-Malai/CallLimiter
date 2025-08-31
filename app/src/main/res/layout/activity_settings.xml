@@ -136,7 +136,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/alegreya"
                     android:textSize="16sp"
-                    android:text="10s"
+                    android:text="10 s"
                     android:paddingStart="10dp"
                     android:paddingEnd="0dp"
                     android:paddingVertical="8dp"

@@ -15,6 +15,7 @@ public class PreferenceHelper {
     private static final String LIMIT = "limit";
     private static final String SETTINGS_PREF = "settings_store";
     private static final String THEME_KEY = "theme_key";
+    private static final String BUFFER_TIME = "buffer_key";
     private static SharedPreferences contactDataStore, lastUpdatedStore, firstTimeStore, settingsStore;
     private static SharedPreferences.Editor contactDataEditor, lastUpdatedEditor, firstTimeEditor, settingsEditor;
 
@@ -79,6 +80,14 @@ public class PreferenceHelper {
 
     public static String getTheme(){
         return settingsStore.getString(THEME_KEY, "System");
+    }
+
+    public static void saveBufferTime(int time){
+        settingsEditor.putInt(BUFFER_TIME, time).apply();
+    }
+
+    public static Integer getBufferTime(){
+        return settingsStore.getInt(BUFFER_TIME, 10);
     }
 
 //    public static Map<String, ?> setAllContactLimits(Context context) {
