@@ -60,14 +60,15 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/call_24px"
-                    android:layout_marginEnd="8dp"/>
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/phone"/>
 
                 <TextView
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.15"
                     android:gravity="center_vertical"
-                    android:text="Phone"
+                    android:text="@string/phone"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -91,14 +92,15 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/call_log_24px"
-                    android:layout_marginEnd="8dp" />
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/call_logs"/>
 
                 <TextView
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.15"
                     android:gravity="center_vertical"
-                    android:text="Call Logs"
+                    android:text="@string/call_logs"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -122,14 +124,15 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:layout_marginEnd="8dp"
-                    android:src="@drawable/contacts_24px" />
+                    android:src="@drawable/contacts_24px"
+                    android:contentDescription="@string/contacts" />
 
                 <TextView
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.15"
                     android:gravity="center_vertical"
-                    android:text="Contacts"
+                    android:text="@string/contacts"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -153,14 +156,15 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/notifications_24px"
-                    android:layout_marginEnd="8dp" />
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/notifications" />
 
                 <TextView
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.15"
                     android:gravity="center_vertical"
-                    android:text="Notifications"
+                    android:text="@string/notifications"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -176,7 +180,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="System-Handled Permissions"
+        android:text="@string/system_handled_permissions"
         android:textSize="20sp"
         android:layout_marginTop="24dp"
         android:textStyle="bold"/>
@@ -201,7 +205,8 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/timer_24px"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="@string/permission_4"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -223,7 +228,8 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/settings_24px"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="@string/permission_6" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -245,7 +251,8 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/refresh_24px"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="@string/permission_7" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -267,7 +274,8 @@
                     android:layout_height="24dp"
                     android:src="@drawable/mobile_vibrate_24px"
                     android:layout_gravity="center"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="@string/permission_8" />
 
                 <TextView
                     android:layout_width="0dp"

@@ -18,8 +18,8 @@
             android:id="@+id/permission_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="Phone"
+            android:textSize="16sp"
+            android:text="@string/phone"
             />
 
         <TextView
@@ -39,7 +39,8 @@
         android:layout_weight="0.1"
         android:layout_gravity="center"
         android:padding="10dp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:contentDescription="@string/grant_permission"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/permission_not_granted"
@@ -47,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:text="Grant"
+        android:text="@string/grant"
         android:layout_margin="10dp"
         android:padding="10dp"
         android:layout_weight="0.1"

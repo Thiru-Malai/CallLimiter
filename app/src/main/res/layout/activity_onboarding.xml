@@ -30,7 +30,7 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Skip"/>
+            android:text="@string/skip"/>
 
         <View
             android:layout_width="0dp"
@@ -42,7 +42,7 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Next" />
+            android:text="@string/next" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

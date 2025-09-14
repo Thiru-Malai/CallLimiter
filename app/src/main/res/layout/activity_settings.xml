@@ -21,17 +21,18 @@
             android:layout_height="wrap_content"
             android:src="@drawable/arrow_back_24px"
             android:paddingEnd="10dp"
-            android:paddingStart="0dp"/>
+            android:paddingStart="0dp"
+            android:contentDescription="@string/arrow_down"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="30sp"
+            android:textSize="22sp"
             android:text="@string/settings"/>
 
     </LinearLayout>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -42,10 +43,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Appearance"
+                android:text="@string/appearance"
                 android:textSize="20sp"
                 android:padding="10dp"/>
 
@@ -65,18 +66,18 @@
                     android:orientation="vertical"
                     android:padding="10dp">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:text="Theme" />
+                        android:text="@string/theme"
+                        android:textSize="16sp" />
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/theme_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:text="System" />
+                        android:textSize="14sp"
+                        android:text="@string/system" />
 
                 </LinearLayout>
 
@@ -86,15 +87,16 @@
                     android:src="@drawable/keyboard_arrow_down_200_24px"
                     android:layout_weight="0.1"
                     android:layout_gravity="center"
-                    android:padding="10dp"/>
+                    android:padding="10dp"
+                    android:contentDescription="@string/arrow_down"/>
 
             </LinearLayout>
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -105,17 +107,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="General"
+                android:text="@string/general"
                 android:textSize="20sp"
                 android:padding="10dp"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Emergency Buffer Time"
+                android:text="@string/emergency_buffer_time"
                 android:textSize="16sp"
                 android:padding="8dp"/>
 
@@ -124,12 +126,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/emergency_buffer_time_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:text="10 s"
+                    android:textSize="14sp"
+                    android:text="@string/_10_s"
                     android:paddingStart="10dp"
                     android:paddingEnd="0dp"
                     android:paddingVertical="8dp"
@@ -147,9 +149,9 @@
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -162,10 +164,10 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="?android:attr/selectableItemBackground">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Permissions"
+                android:text="@string/permissions"
                 android:textSize="20sp"
                 android:padding="10dp"
                 android:layout_weight="0.9"/>
@@ -176,13 +178,14 @@
                 android:src="@drawable/keyboard_arrow_right_24px"
                 android:layout_weight="0.1"
                 android:layout_gravity="center"
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:contentDescription="@string/arrow_down"/>
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -203,16 +206,16 @@
                 android:padding="10dp"
                 android:layout_weight="0.9">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Support"
+                    android:text="@string/support"
                     android:textSize="20sp"
                     />
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="View GitHub Issues"
+                    android:text="@string/view_github_issues"
                     android:textSize="14sp"/>
 
             </LinearLayout>
@@ -223,13 +226,14 @@
                 android:src="@drawable/keyboard_arrow_right_24px"
                 android:layout_weight="0.1"
                 android:layout_gravity="center"
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:contentDescription="@string/arrow_down"/>
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -243,10 +247,10 @@
             android:id="@+id/about_settings"
             android:background="?android:attr/selectableItemBackground">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="About"
+                android:text="@string/about"
                 android:textSize="20sp"
                 android:padding="10dp"
                 android:layout_weight="0.9" />
@@ -257,10 +261,11 @@
                 android:src="@drawable/keyboard_arrow_right_24px"
                 android:layout_weight="0.1"
                 android:layout_gravity="center"
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:contentDescription="@string/arrow_down"/>
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>

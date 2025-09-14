@@ -21,7 +21,7 @@
         app:tint="?attr/colorPrimary" />
 
     <!-- App Name -->
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textAppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,11 +32,11 @@
         android:layout_marginBottom="28dp"/>
 
     <!-- About Description -->
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textAboutApp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Take control of your phone calls by setting duration limits and managing your time more efficiently."
+        android:text="@string/take_control_of_your_phone_calls_by_setting_duration_limits_and_managing_your_time_more_efficiently"
         android:textSize="18sp"
         android:lineSpacingExtra="8dp"
         android:textAlignment="center"/>
