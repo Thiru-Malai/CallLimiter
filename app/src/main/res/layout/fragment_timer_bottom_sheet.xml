@@ -6,11 +6,11 @@
     android:padding="16dp"
     android:orientation="vertical">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Set Time Limit"
+        android:text="@string/set_time_limit"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -30,7 +30,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hours"
+            android:text="@string/hours"
             android:textSize="16sp"
             android:layout_gravity="center_vertical"/>
 
@@ -43,7 +43,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Minutes"
+            android:text="@string/minutes"
             android:textSize="16sp"
             android:layout_gravity="center_vertical"/>
     </LinearLayout>
@@ -57,7 +57,7 @@
             android:id="@+id/btnDeleteTimer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Delete Timer"
+            android:text="@string/delete_timer"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"/>
     </LinearLayout>
@@ -74,7 +74,7 @@
             android:id="@+id/btnCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"/>
 
@@ -83,7 +83,7 @@
             android:id="@+id/btnOk"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OK"
+            android:text="@string/ok"
             android:layout_weight="1"/>
     </LinearLayout>
 
