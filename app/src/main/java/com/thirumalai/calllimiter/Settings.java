@@ -2,6 +2,7 @@ package com.thirumalai.calllimiter;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,7 +25,7 @@ import org.w3c.dom.Text;
 import java.util.Arrays;
 
 public class Settings extends AppCompatActivity {
-    private LinearLayout layoutTheme;
+    private LinearLayout layoutTheme, githubIssues, permissions;
     private TextView selectedThemeText, bufferValueText;
     private ImageView backBtn;
     private SeekBar bufferBar;
@@ -46,6 +47,8 @@ public class Settings extends AppCompatActivity {
         selectedThemeText = findViewById(R.id.theme_text);
         backBtn = findViewById(R.id.back_btn);
         layoutTheme = findViewById(R.id.theme_layout);
+        githubIssues = findViewById(R.id.github_issues);
+        permissions = findViewById(R.id.permissions);
         bufferBar = findViewById(R.id.emergency_buffer_time_seek_bar);
         bufferValueText = findViewById(R.id.emergency_buffer_time_text);
 
@@ -65,6 +68,22 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showThemeBottomSheet();
+            }
+        });
+
+        githubIssues.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Thiru-Malai/CallLimiter/issues"));
+                startActivity(intent);
+            }
+        });
+
+        permissions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Settings.this, Permissions.class);
+                startActivity(intent);
             }
         });
 

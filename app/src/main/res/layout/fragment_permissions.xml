@@ -39,7 +39,7 @@
             android:layout_marginTop="8dp"
             android:lineSpacingExtra="4dp" />
 
-        <!-- Permission List -->
+        <!-- User Handled Permission List -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,12 +60,21 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/call_24px"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.15"
+                    android:gravity="center_vertical"
+                    android:text="Phone"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.85"
                     android:text="@string/permission_1"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -82,12 +91,21 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:src="@drawable/call_log_24px"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.15"
+                    android:gravity="center_vertical"
+                    android:text="Call Logs"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.85"
                     android:text="@string/permission_2"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -103,17 +121,74 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_gravity="center"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="8dp"
                     android:src="@drawable/contacts_24px" />
+
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.15"
+                    android:gravity="center_vertical"
+                    android:text="Contacts"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.85"
                     android:text="@string/permission_3"
                     android:textSize="14sp" />
             </LinearLayout>
 
+            <!-- NOTIFICATIONS -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/notifications_24px"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.15"
+                    android:gravity="center_vertical"
+                    android:text="Notifications"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.85"
+                    android:text="@string/permission_5"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="System-Handled Permissions"
+        android:textSize="20sp"
+        android:layout_marginTop="24dp"
+        android:textStyle="bold"/>
+
+        <!-- System Handled Permission List -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp"
+            android:divider="?android:attr/dividerVertical"
+            android:showDividers="middle">
             <!-- CALL CONTROL -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -133,28 +208,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/permission_4"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <!-- NOTIFICATIONS -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="12dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/notifications_24px"
-                    android:layout_marginEnd="16dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/permission_5"
                     android:textSize="14sp" />
             </LinearLayout>
 

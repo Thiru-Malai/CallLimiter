@@ -26,7 +26,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/alegreya_semibold"
             android:textSize="30sp"
             android:text="@string/settings"/>
 
@@ -47,7 +46,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Appearance"
-                android:fontFamily="@font/alegreya_semibold"
                 android:textSize="20sp"
                 android:padding="10dp"/>
 
@@ -70,7 +68,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/alegreya_semibold"
                         android:textSize="16sp"
                         android:text="Theme" />
 
@@ -78,7 +75,6 @@
                         android:id="@+id/theme_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/alegreya"
                         android:textSize="16sp"
                         android:text="System" />
 
@@ -113,7 +109,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="General"
-                android:fontFamily="@font/alegreya_semibold"
                 android:textSize="20sp"
                 android:padding="10dp"/>
 
@@ -121,7 +116,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Emergency Buffer Time"
-                android:fontFamily="@font/alegreya_semibold"
                 android:textSize="16sp"
                 android:padding="8dp"/>
 
@@ -134,7 +128,6 @@
                     android:id="@+id/emergency_buffer_time_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/alegreya"
                     android:textSize="16sp"
                     android:text="10 s"
                     android:paddingStart="10dp"
@@ -164,14 +157,15 @@
         app:cardCornerRadius="10dp">
 
         <LinearLayout
+            android:id="@+id/permissions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="?android:attr/selectableItemBackground">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Permissions"
-                android:fontFamily="@font/alegreya_semibold"
                 android:textSize="20sp"
                 android:padding="10dp"
                 android:layout_weight="0.9"/>
@@ -196,9 +190,11 @@
         app:cardCornerRadius="10dp">
 
         <LinearLayout
+            android:id="@+id/github_issues"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="?android:attr/selectableItemBackground">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -211,14 +207,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Support"
-                    android:fontFamily="@font/alegreya_semibold"
                     android:textSize="20sp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="View GitHub Issues"
-                    android:fontFamily="@font/alegreya"
                     android:textSize="14sp"/>
 
             </LinearLayout>
@@ -251,7 +245,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="About"
-                android:fontFamily="@font/alegreya_semibold"
                 android:textSize="20sp"
                 android:padding="10dp"
                 android:layout_weight="0.9" />
