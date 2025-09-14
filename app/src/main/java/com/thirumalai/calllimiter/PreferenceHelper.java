@@ -9,6 +9,7 @@ public class PreferenceHelper {
     private static final String CONTACT_DATA_PREF = "contact_data_store";
     private static final String LAST_UPDATED_PREF = "last_updated_store";
     private static final String FIRST_TIME_PREF = "first_time_store";
+    private static final String READ_TERMS_CONDITIONS_PREF = "read_terms_conditions";
     private static final String LAST_UPDATED_KEY = "last_updated_key";
     private static final String FIRST_TIME_KEY = "first_time_key";
     private static final String REMAINING_TIME = "remaining_time";
@@ -16,8 +17,9 @@ public class PreferenceHelper {
     private static final String SETTINGS_PREF = "settings_store";
     private static final String THEME_KEY = "theme_key";
     private static final String BUFFER_TIME = "buffer_key";
-    private static SharedPreferences contactDataStore, lastUpdatedStore, firstTimeStore, settingsStore;
-    private static SharedPreferences.Editor contactDataEditor, lastUpdatedEditor, firstTimeEditor, settingsEditor;
+    private static final String TERMS_CONDITIONS = "terms_conditions_key";
+    private static SharedPreferences contactDataStore, lastUpdatedStore, firstTimeStore, settingsStore, readTermsAndConditionsStore;
+    private static SharedPreferences.Editor contactDataEditor, lastUpdatedEditor, firstTimeEditor, settingsEditor, readTermsAndConditionsEditor;
 
     public static void init(Context context) {
         if (contactDataStore == null) {
@@ -35,6 +37,10 @@ public class PreferenceHelper {
         if(settingsStore == null){
             settingsStore = context.getApplicationContext().getSharedPreferences(SETTINGS_PREF, Context.MODE_PRIVATE);
             settingsEditor = settingsStore.edit();
+        }
+        if(readTermsAndConditionsStore == null){
+            readTermsAndConditionsStore = context.getApplicationContext().getSharedPreferences(READ_TERMS_CONDITIONS_PREF, Context.MODE_PRIVATE);
+            readTermsAndConditionsEditor = readTermsAndConditionsStore.edit();
         }
     }
 
@@ -88,6 +94,14 @@ public class PreferenceHelper {
 
     public static Integer getBufferTime(){
         return settingsStore.getInt(BUFFER_TIME, 10);
+    }
+
+    public static void readTermsAndConditions(boolean read){
+        readTermsAndConditionsEditor.putBoolean(TERMS_CONDITIONS, read).apply();
+    }
+
+    public static boolean getStatusTermsAndConditions() {
+        return readTermsAndConditionsStore.getBoolean(TERMS_CONDITIONS, false);
     }
 
 //    public static Map<String, ?> setAllContactLimits(Context context) {

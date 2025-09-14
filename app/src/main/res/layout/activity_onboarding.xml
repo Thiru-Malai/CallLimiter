@@ -30,7 +30,8 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/skip"/>
+            android:text="@string/skip"
+            android:visibility="gone"/>
 
         <View
             android:layout_width="0dp"
@@ -43,6 +44,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/next" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/read_terms_conditions"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/read_terms_conditions"
+            app:icon="@drawable/open_in_new_24px"
+            android:visibility="gone"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

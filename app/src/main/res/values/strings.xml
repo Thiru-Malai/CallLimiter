@@ -56,4 +56,6 @@
     <string name="system_default">System Default</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
+    <string name="by_continuing_you_agree_to_our_terms_amp_conditions"><![CDATA[By continuing, you agree to our Terms & Conditions]]></string>
+    <string name="read_terms_conditions"><![CDATA[READ TERMS & CONDITIONS]]></string>
 </resources>
