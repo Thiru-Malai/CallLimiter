@@ -1,6 +1,4 @@
-package com.thirumalai.calllimiter;
-
-import static androidx.core.content.ContextCompat.startForegroundService;
+package com.thirumalai.calllimiter.BroadcastReceivers;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -11,6 +9,9 @@ import android.util.Log;
 
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
+
+import com.thirumalai.calllimiter.CallMonitorWorker;
+import com.thirumalai.calllimiter.PreferenceHelper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -23,13 +24,13 @@ public class BootReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int activeLimitContactSize = PreferenceHelper.getAllContactSize();
             if(activeLimitContactSize > 0){
-//                OneTimeWorkRequest workRequest =
-//                        new OneTimeWorkRequest.Builder(CallMonitorWorker.class)
-//                                .setInitialDelay(10, TimeUnit.SECONDS) // delay avoids crash
-//                                .build();
-//                WorkManager.getInstance(context).enqueue(workRequest);
-                context.startService(new Intent(context, CallMonitorService.class));
-                Log.d("BootReceiver", "Started Foreground Service from Boot Receiver");
+                OneTimeWorkRequest workRequest =
+                        new OneTimeWorkRequest.Builder(CallMonitorWorker.class)
+                                .setInitialDelay(10, TimeUnit.SECONDS) // delay avoids crash
+                                .build();
+                WorkManager.getInstance(context).enqueue(workRequest);
+//                context.startService(new Intent(context, CallMonitorService.class));
+//                Log.d("BootReceiver", "Started Foreground Service from Boot Receiver");
             }
         }
     }

@@ -3,6 +3,7 @@ package com.thirumalai.calllimiter;
 import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL;
 
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import androidx.core.app.NotificationCompat;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
+import com.thirumalai.calllimiter.BroadcastReceivers.CancelTimerReceiver;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,14 +43,25 @@ public class CallMonitorService extends Service {
     private PhoneNumberUtil phoneNumberUtil;
     private boolean isTimerRunning = false;
     private int elapsedTime = 1; // Time in seconds
+    private static CallMonitorService instance;
+    private PendingIntent pendingIntent;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
 
         PreferenceHelper.init(this);
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         phoneNumberUtil = PhoneNumberUtil.getInstance();
+
+        Intent clickIntent = new Intent(this, CancelTimerReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                clickIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
     }
 
     @Override
@@ -67,9 +80,12 @@ public class CallMonitorService extends Service {
                 Log.d("CallMonitorService", phoneNumber);
                 Phonenumber.PhoneNumber number;
                 try {
-                    number = phoneNumberUtil.parse(phoneNumber, null);
-                    String numberWithoutCountryCode = String.valueOf(number.getNationalNumber());
-                    System.out.println(numberWithoutCountryCode);
+                    String numberWithoutCountryCode = phoneNumber;
+                    if(phoneNumber.startsWith("+")){
+                        number = phoneNumberUtil.parse(phoneNumber, null);
+                        numberWithoutCountryCode = String.valueOf(number.getNationalNumber());
+                        System.out.println(numberWithoutCountryCode);
+                    }
                     if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                         elapsedTime = 1;
 
@@ -78,9 +94,9 @@ public class CallMonitorService extends Service {
                         if(phoneNumberData != null){
                             JSONObject jsonObject = new JSONObject(phoneNumberData);
                             int remaining_time = jsonObject.getInt("remaining_time");
-                            
+                            int bufferTime = PreferenceHelper.getBufferTime();
                             if(remaining_time < 10){
-                                remaining_time = 10;
+                                remaining_time = bufferTime;
                             }
 
                             // Adding +10 secs - timer starts once the call is made and not when the call is attended
@@ -93,22 +109,23 @@ public class CallMonitorService extends Service {
                             Log.d("callService", "number not present");
                         }
                     } else if (state == TelephonyManager.CALL_STATE_IDLE) {
-                        Log.d("CallMonitorService", "Call ended. Stopping timer.");
-
-                        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                        if(vibrator != null && vibrator.hasVibrator()){
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                VibrationEffect vibrationEffect = VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE);
-                                vibrator.vibrate(vibrationEffect);
-                            }
-                            else{
-                                vibrator.vibrate(200);
-                            }
-                        }
+                        Log.d("CallMonitorService", "Call State Idle Triggered");
 
                         String phoneNumberData = PreferenceHelper.getContact(numberWithoutCountryCode);
-
                         if(phoneNumberData != null){
+                            Log.d("CallMonitorService", "Call ended. Stopping timer.");
+
+                            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            if(vibrator != null && vibrator.hasVibrator()){
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    VibrationEffect vibrationEffect = VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE);
+                                    vibrator.vibrate(vibrationEffect);
+                                }
+                                else{
+                                    vibrator.vibrate(200);
+                                }
+                            }
+
                             // Update remaining time
 
                             try {
@@ -120,10 +137,12 @@ public class CallMonitorService extends Service {
                                 }
 
                                 jsonObject.put("remaining_time", remainingTime);
-                                
+
                                 PreferenceHelper.saveContact(numberWithoutCountryCode, jsonObject.toString());
 
-                                stopCallTimer();
+                                if(isTimerRunning){
+                                    stopCallTimer();
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -152,7 +171,7 @@ public class CallMonitorService extends Service {
         handler.post(updateRunnable);
     }
 
-    private void stopCallTimer() {
+    public void stopCallTimer() {
         if (isTimerRunning) {
             isTimerRunning = false;
         }
@@ -227,11 +246,13 @@ public class CallMonitorService extends Service {
 
     private void updateTimerNotification() {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Call Monitor Active")
+                .setContentTitle("Tap here to stop call timer")
                 .setContentText("Time Left: " + formatTime((callTimeLimit / 1000) - elapsedTime))
                 .setSmallIcon(R.drawable.logo___notification)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_v2))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOngoing(true)
+                .setContentIntent(pendingIntent)
                 .build();
 
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -259,9 +280,15 @@ public class CallMonitorService extends Service {
         return null;
     }
 
+    public static CallMonitorService getInstance() {
+        return instance;
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+        instance = null;
+
         if (telephonyManager != null && phoneStateListener != null) {
             telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
         }

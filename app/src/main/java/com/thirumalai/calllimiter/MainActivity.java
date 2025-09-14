@@ -3,9 +3,11 @@ package com.thirumalai.calllimiter;
 import android.Manifest;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Insets;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -14,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,15 +24,20 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.pm.PackageManager;
+
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,21 +58,33 @@ public class MainActivity extends AppCompatActivity {
     private TextInputEditText phoneNumberField;
     boolean isPhoneAvailable = false, isTimeAvailable = false;
     private static final int NOTIFICATION_PERMISSION_CODE = 1001;
+    private static final int PICK_CONTACT_REQUEST = 1;
+    private ImageView settings;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        setupStatusBarAppearance();
 
         PreferenceHelper.init(this);
+
+        boolean isFirstTimeLogin = PreferenceHelper.isFirstTimeLogin();
+        String selectedTheme = PreferenceHelper.getTheme();
+        setTheme(selectedTheme);
+        if(isFirstTimeLogin) {
+            PreferenceHelper.saveBufferTime(10);
+            startActivity(new Intent(this, OnboardingActivity.class));
+            finish();
+            return;
+        }
+
+        setContentView(R.layout.activity_main);
+        setupStatusBarAppearance();
 
         Button timeLimitButton = findViewById(R.id.set_time_limit_button);
         setLimit = findViewById(R.id.set_limit_button);
         selectFromContacts = findViewById(R.id.select_contact_button);
         phoneNumberField = findViewById(R.id.phone_number_input);
-
+        settings = findViewById(R.id.settings_button);
         // Check for last updated date change
         checkAndSetInitialDate();
 
@@ -154,6 +174,22 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
+            }
+        });
+
+        selectFromContacts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                startActivityForResult(intent, PICK_CONTACT_REQUEST);
+            }
+        });
+
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, Settings.class);
+                startActivity(intent);
             }
         });
     }
@@ -316,26 +352,25 @@ public class MainActivity extends AppCompatActivity {
                     private JSONObject updateLimit(String phoneNumberData) throws JSONException {
                         JSONObject jsonObject = new JSONObject(phoneNumberData);
                         int remainingTime =  jsonObject.getInt("remaining_time");
-                        int totalTime = jsonObject.getInt("limit");
-                        int totalSeconds = (selectedHour * 3600) + (selectedMinute * 60);
-                        if(totalTime == remainingTime){
-                            jsonObject.put("limit", totalSeconds);
-                            jsonObject.put("remaining_time", totalSeconds);
+                        int limit = jsonObject.getInt("limit");
+                        int updatedLimit = (selectedHour * 3600) + (selectedMinute * 60);
+                        if(limit == remainingTime){
+                            jsonObject.put("limit", updatedLimit);
+                            jsonObject.put("remaining_time", updatedLimit);
                             return jsonObject;
-                        } else if(totalSeconds == remainingTime){
-                            jsonObject.put("limit", totalSeconds);
-                            jsonObject.put("remaining_time", totalSeconds);
+                        } else if(updatedLimit == remainingTime){
+                            jsonObject.put("limit", updatedLimit);
+                            jsonObject.put("remaining_time", updatedLimit);
                             return jsonObject;
-                        } else if(totalSeconds > totalTime){
-                            jsonObject.put("limit", totalSeconds);
-                            jsonObject.put("remaining_time", totalSeconds - totalTime + remaining_time);
+                        } else if(remaining_time >= updatedLimit){
+                            jsonObject.put("limit", updatedLimit);
+                            jsonObject.put("remaining_time", updatedLimit);
                             return jsonObject;
-                        } else if(totalSeconds < totalTime){
-                            if(totalSeconds - totalTime + remaining_time <= 0){
-                                jsonObject.put("limit", totalSeconds);
-                                jsonObject.put("remaining_time", 0);
-                                return jsonObject;
-                            }
+                        } else if(limit < updatedLimit){
+                            int newTime = updatedLimit - limit + remaining_time;
+                            jsonObject.put("limit", updatedLimit);
+                            jsonObject.put("remaining_time", newTime);
+                            return jsonObject;
                         }
                         return jsonObject;
                     }
@@ -444,4 +479,68 @@ public class MainActivity extends AppCompatActivity {
         return new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
+
+        if (requestCode == PICK_CONTACT_REQUEST && resultCode == RESULT_OK) {
+            android.net.Uri contactUri = data.getData();
+
+            String[] projection = {
+                    ContactsContract.CommonDataKinds.Phone.NUMBER,
+                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+            };
+
+            assert contactUri != null;
+            try (Cursor cursor = getContentResolver().query(contactUri, projection, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                    int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+
+                    String phoneNumber = cursor.getString(numberIndex);
+                    String name = cursor.getString(nameIndex);
+
+                    String numberWithoutCountryCode;
+
+                    if(phoneNumber.startsWith("+")){
+                        numberWithoutCountryCode = String.valueOf(phoneNumberUtil.parse(phoneNumber, null).getNationalNumber());
+                    }
+                    else {
+                        numberWithoutCountryCode = cleanLocalPhoneNumber(phoneNumber);
+                    }
+
+                    phoneNumberField.setText(numberWithoutCountryCode);
+                }
+            } catch (Exception e) {
+                if(e.toString().contains("Error type: INVALID_COUNTRY_CODE.")){
+                    Toast.makeText(this, "Pick valid phone number.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Error please try again.", Toast.LENGTH_SHORT).show();
+                }
+//                throw new RuntimeException(e);
+            }
+        }
+    }
+
+     private String cleanLocalPhoneNumber(String rawNumber) {
+        if (rawNumber == null) return "";
+
+        // Remove all characters except digits
+        return rawNumber.replaceAll("[^\\d]", "");
+    }
+
+    private void setTheme(String selectedTheme){
+        switch(selectedTheme){
+            case "Light":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            break;
+            case "Dark":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            break;
+            default:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        }
+    }
 }

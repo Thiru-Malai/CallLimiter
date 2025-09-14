@@ -1,20 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/textView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/alegreya_semibold"
-        android:text="@string/limit"
-        android:textSize="30sp" />
+        android:layout_height="wrap_content">
 
-    <TextView
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/alegreya_semibold"
+            android:text="@string/limit"
+            android:layout_weight="0.9"
+            android:textSize="30sp" />
+
+        <ImageView
+            android:id="@+id/settings_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.1"
+            android:contentDescription="@string/settings"
+            android:src="@drawable/settings_24px" />
+
+    </LinearLayout>
+
+
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -64,14 +82,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="@string/set_limit"
-        app:cornerRadius="5dp" />
+        app:cornerRadius="5dp"
+        tools:ignore="VisualLintButtonSize" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/select_contact_button"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/select_from_contacts" />
+        android:text="@string/select_from_contacts"
+        tools:ignore="VisualLintButtonSize" />
 
     <ScrollView
         android:layout_width="match_parent"
