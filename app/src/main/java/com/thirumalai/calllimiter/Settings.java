@@ -25,7 +25,7 @@ import org.w3c.dom.Text;
 import java.util.Arrays;
 
 public class Settings extends AppCompatActivity {
-    private LinearLayout layoutTheme, githubIssues, permissions;
+    private LinearLayout layoutTheme, githubIssues, permissions, about;
     private TextView selectedThemeText, bufferValueText;
     private ImageView backBtn;
     private SeekBar bufferBar;
@@ -49,6 +49,7 @@ public class Settings extends AppCompatActivity {
         layoutTheme = findViewById(R.id.theme_layout);
         githubIssues = findViewById(R.id.github_issues);
         permissions = findViewById(R.id.permissions);
+        about = findViewById(R.id.about_settings);
         bufferBar = findViewById(R.id.emergency_buffer_time_seek_bar);
         bufferValueText = findViewById(R.id.emergency_buffer_time_text);
 
@@ -113,6 +114,14 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+
+        about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Settings.this, About.class);
+                startActivity(intent);
             }
         });
     }
