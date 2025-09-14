@@ -17,7 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class About extends AppCompatActivity {
     TextView version;
     ImageView back_btn;
-    CardView sponsor, sourceCode, changeLog;
+    CardView sponsor, sourceCode, changeLog, termsAndConditions, privacyPolicy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +33,8 @@ public class About extends AppCompatActivity {
         version = findViewById(R.id.version);
         sponsor = findViewById(R.id.sponsor);
         sourceCode = findViewById(R.id.source_code);
+        termsAndConditions = findViewById(R.id.terms_conditions_about);
+        privacyPolicy = findViewById(R.id.privacy_policy_about);
         changeLog = findViewById(R.id.change_log);
         back_btn = findViewById(R.id.back_btn_about);
 
@@ -56,6 +58,16 @@ public class About extends AppCompatActivity {
 
         changeLog.setOnClickListener(view -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Thiru-Malai/CallLimiter/releases"));
+            startActivity(intent);
+        });
+
+        termsAndConditions.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Thiru-Malai/CallLimiter/blob/master/TermsAndConditions.md"));
+            startActivity(intent);
+        });
+
+        privacyPolicy.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Thiru-Malai/CallLimiter/blob/master/PrivacyPolicy.md"));
             startActivity(intent);
         });
 
