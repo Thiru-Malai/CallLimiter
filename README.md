@@ -2,10 +2,18 @@
 
 Call Limiter is an Android application designed to help users set a time limit for phone calls to specific contacts. This app ensures calls do not exceed the defined duration, making it easier to manage call times effectively.
 
+<div align="center">
+    <img src="./metadata/en-US/images/featureGraphic.png" alt="Feature Graphic" />
+</div>
+
 ## 🌟Features
-<img src="https://github.com/user-attachments/assets/48623ec5-62b3-4a21-8fb7-70a6cdd990fa" width="270" height="603" alt="light_theme">
-<img src="https://github.com/user-attachments/assets/76895ded-ad30-4a6f-85be-4e1730cb2bb2" width="270" height="603" alt="dark_theme">
-<img src="https://github.com/user-attachments/assets/312e65ce-d1e0-41a9-b915-8336d63b6706" width="270" height="603" alt="time_limit">
+<div align="center">
+  <img src="metadata/en-US/images/phoneScreenshots/1.png" width="23%" alt="Onboarding Page"/>
+  <img src="metadata/en-US/images/phoneScreenshots/2.png" width="23%" alt="Home Screen"/>
+  <img src="metadata/en-US/images/phoneScreenshots/3.png" width="23%" alt="Add Limits to Contacts"/>
+  <img src="metadata/en-US/images/phoneScreenshots/4.png" width="23%" alt="Settings"/>
+</div>
+
 <br></br>
 
 - 🔢 **Set time limits** for specific phone numbers
