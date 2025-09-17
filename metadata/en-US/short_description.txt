@@ -1,0 +1,1 @@
+Limit call duration per contact and automatically hang up when time is up

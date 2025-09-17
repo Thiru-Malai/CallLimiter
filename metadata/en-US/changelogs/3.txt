@@ -1,0 +1,12 @@
+## 🚀 New Features
+- Settings page with Theme, Buffer Time, Permissions, Support & About
+- About section with app info, sponsor, source code, and policies
+
+## 🔧 Changes
+- New Material Design UI with fresh logo & themes
+- Revamped onboarding flow
+
+## 📝 Notes
+- Call timer cancellation
+- Improved contacts
+- Bug fixes & stability improvements

@@ -1,0 +1,16 @@
+<b>Call Limiter</b> is a simple, open-source Android app that helps you take control of your phone calls. Set time limits for specific contacts and let the app automatically hang up when the limit is reached — making it easy to save time, avoid distractions, and manage conversations better.
+
+<b>Features:</b>
+
+<ul>
+    <li><b>Per-Contact Call Limits:</b> Define custom call durations for individual numbers.</li>
+    <li><b>Automatic Hang-Up:</b> Calls are disconnected when the chosen time is reached.</li>
+    <li><b>Easy Time Selection:</b> Choose limits using a bottom sheet scroll wheel for a smooth experience.</li>
+    <li><b>Persistent Storage:</b> Your limits remain saved until you decide to change or delete them.</li>
+    <li><b>Flexible Editing:</b> Update or remove call limits anytime with ease.</li>
+    <li><b>Emergency Buffer:</b> Add a few extra seconds for urgent or unexpected needs.</li>
+    <li><b>Modern Theming:</b> Supports both light and dark modes, adapting to your system theme.</li>
+    <li><b>Privacy-Focused:</b> Works entirely offline — no internet, no tracking, no data sharing.</li>
+</ul>
+
+Stay in control of your conversations with <b>Call Limiter</b> — lightweight, private, and designed to fit seamlessly into your daily calling habits.
