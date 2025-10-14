@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -19,16 +20,19 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.materialswitch.MaterialSwitch;
 
 import org.w3c.dom.Text;
 
 import java.util.Arrays;
 
 public class Settings extends AppCompatActivity {
-    private LinearLayout layoutTheme, githubIssues, permissions, about;
+    private LinearLayout layoutTheme, githubIssues, permissions, about, timeLimitForAllNumbers;
     private TextView selectedThemeText, bufferValueText;
     private ImageView backBtn;
     private SeekBar bufferBar;
+    private MaterialSwitch switchBtn;
+    private boolean isChecked = false;
     private final int[] BUFFER_VALUES = {10, 20, 30, 60, 120, 180, 240, 300};
 
     @Override
@@ -52,6 +56,17 @@ public class Settings extends AppCompatActivity {
         about = findViewById(R.id.about_settings);
         bufferBar = findViewById(R.id.emergency_buffer_time_seek_bar);
         bufferValueText = findViewById(R.id.emergency_buffer_time_text);
+        switchBtn = findViewById(R.id.limit_all_numbers_switch);
+        timeLimitForAllNumbers = findViewById(R.id.time_limit_all_numbers_layout);
+
+        isChecked = PreferenceHelper.getLimitForAllNumbersEnabled();
+
+        switchBtn.setChecked(isChecked);
+        if(isChecked){
+            timeLimitForAllNumbers.setVisibility(View.VISIBLE);
+        } else {
+            timeLimitForAllNumbers.setVisibility(View.GONE);
+        }
 
         int bufferTime = PreferenceHelper.getBufferTime();
         bufferBar.setMax(BUFFER_VALUES.length - 1);
@@ -122,6 +137,18 @@ public class Settings extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(Settings.this, About.class);
                 startActivity(intent);
+            }
+        });
+
+        switchBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                PreferenceHelper.updateLimitForAllNumbersEnabled(b);
+                if(b){
+                    timeLimitForAllNumbers.setVisibility(View.VISIBLE);
+                } else {
+                    timeLimitForAllNumbers.setVisibility(View.GONE);
+                }
             }
         });
     }

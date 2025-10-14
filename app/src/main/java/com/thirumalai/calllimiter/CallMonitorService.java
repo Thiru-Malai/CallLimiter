@@ -106,6 +106,7 @@ public class CallMonitorService extends Service {
 
                             Log.d("CallMonitorService", "Call started. Starting timer.");
                         } else {
+
                             Log.d("callService", "number not present");
                         }
                     } else if (state == TelephonyManager.CALL_STATE_IDLE) {
