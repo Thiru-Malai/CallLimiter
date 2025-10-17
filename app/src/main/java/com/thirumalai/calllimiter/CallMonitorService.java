@@ -106,7 +106,7 @@ public class CallMonitorService extends Service {
                             phoneNumberData = newNumber.toString();
                             Log.d("CallMonitorService", "Adding new number since limit for all numbers is enabled");
                         }
-                        System.out.println(phoneNumberData);
+
                         if(phoneNumberData != null){
                             JSONObject jsonObject = new JSONObject(phoneNumberData);
                             int remaining_time = jsonObject.getInt("remaining_time");
