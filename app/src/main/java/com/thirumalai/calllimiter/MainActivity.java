@@ -243,7 +243,9 @@ public class MainActivity extends AppCompatActivity {
 
         Map<String, ?> allEntries = PreferenceHelper.getAllContact();
 
-        if(action.equals("LoadOnCreate") && !allEntries.isEmpty()){
+        boolean isLimitForEveryNumberEnabled = PreferenceHelper.getLimitForAllNumbersEnabled();
+
+        if(action.equals("LoadOnCreate") && (!allEntries.isEmpty() || isLimitForEveryNumberEnabled)){
             // Start foreground service
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(new Intent(this, CallMonitorService.class));
@@ -255,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                 startForegroundService(new Intent(this, CallMonitorService.class));
                 Log.d("MainActivity", "Started Foreground Service from SetLimit");
             }
-        } else if(action.equals("DeleteTimeLimit") && allEntries.isEmpty()){
+        } else if(action.equals("DeleteTimeLimit") && allEntries.isEmpty() && !isLimitForEveryNumberEnabled){
             Intent stopForegroundService = new Intent(this, CallMonitorService.class);
             stopService(stopForegroundService);
             Log.d("MainActivity", "Stopped Foreground Service from DeleteTimeLimit");

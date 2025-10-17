@@ -3,7 +3,9 @@ package com.thirumalai.calllimiter;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -25,10 +27,11 @@ import com.google.android.material.materialswitch.MaterialSwitch;
 import org.w3c.dom.Text;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class Settings extends AppCompatActivity {
     private LinearLayout layoutTheme, githubIssues, permissions, about, timeLimitForAllNumbers;
-    private TextView selectedThemeText, bufferValueText;
+    private TextView selectedThemeText, bufferValueText, timeLimit;
     private ImageView backBtn;
     private SeekBar bufferBar;
     private MaterialSwitch switchBtn;
@@ -58,8 +61,25 @@ public class Settings extends AppCompatActivity {
         bufferValueText = findViewById(R.id.emergency_buffer_time_text);
         switchBtn = findViewById(R.id.limit_all_numbers_switch);
         timeLimitForAllNumbers = findViewById(R.id.time_limit_all_numbers_layout);
+        timeLimit = findViewById(R.id.time_limit_all_numbers_text);
 
         isChecked = PreferenceHelper.getLimitForAllNumbersEnabled();
+        int timeLimit1 = PreferenceHelper.getTimeLimitForAllNumbers();
+
+        int hours = timeLimit1 / 3600;
+        int minutes = (timeLimit1 % 3600) / 60;
+        String hoursStr = "00", minutesStr = "00";
+        if(hours < 10){
+            hoursStr = "0" + hours;
+        } else {
+            hoursStr = Integer.toString(hours);
+        }
+        if(minutes < 10){
+            minutesStr = "0" + minutes;
+        } else {
+            minutesStr = Integer.toString(minutes);
+        }
+        timeLimit.setText(hoursStr + ":" + minutesStr + ":" + "00");
 
         switchBtn.setChecked(isChecked);
         if(isChecked){
@@ -145,11 +165,53 @@ public class Settings extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 PreferenceHelper.updateLimitForAllNumbersEnabled(b);
                 if(b){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(new Intent(getApplicationContext(), CallMonitorService.class));
+                        Log.d("Settings", "Started Foreground Service from Settings");
+                    } else {
+                        Log.d("Settings", "Staring Foreground Failed from Settings");
+                    }
                     timeLimitForAllNumbers.setVisibility(View.VISIBLE);
                 } else {
+                    Map<String, ?> allEntries = PreferenceHelper.getAllContact();
+                    if(allEntries.isEmpty()){
+                        Intent stopForegroundService = new Intent(getApplicationContext(), CallMonitorService.class);
+                        stopService(stopForegroundService);
+                        Log.d("Settings", "Stopped Foreground Service from Settings");
+                    }
                     timeLimitForAllNumbers.setVisibility(View.GONE);
                 }
             }
+        });
+
+        timeLimit.setOnClickListener(view -> {
+                TimerBottomSheet bottomSheet = new TimerBottomSheet(new TimerBottomSheet.OnTimeSelectedListener() {
+                    @Override
+                    public void onTimeSelected(int hours, int minutes) {
+                        System.out.println(hours + " " + minutes);
+
+                        String hoursStr = "00", minutesStr = "00";
+                        if(hours < 10){
+                            hoursStr = "0" + hours;
+                        } else {
+                            hoursStr = Integer.toString(hours);
+                        }
+                        if(minutes < 10){
+                            minutesStr = "0" + minutes;
+                        } else {
+                            minutesStr = Integer.toString(minutes);
+                        }
+                        timeLimit.setText(hoursStr + ":" + minutesStr + ":" + "00");
+
+                        int timeLimitInSeconds = (hours * 3600) + (minutes * 60);
+
+                        PreferenceHelper.updateTimeLimitForAllNumbers(timeLimitInSeconds);
+                    }
+
+                    @Override
+                    public void onTimerReset() { }
+                });
+                bottomSheet.show(getSupportFragmentManager(), "TimerBottomSheet");
         });
     }
 
