@@ -33,6 +33,10 @@ import com.thirumalai.calllimiter.BroadcastReceivers.CancelTimerReceiver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class CallMonitorService extends Service {
     private static final String CHANNEL_ID = "CallMonitorChannel";
     private TelephonyManager telephonyManager;
@@ -90,7 +94,19 @@ public class CallMonitorService extends Service {
                         elapsedTime = 1;
 
                         String phoneNumberData = PreferenceHelper.getContact(numberWithoutCountryCode);
-                        
+
+                        boolean isTimeLimitForAllNumbersEnabled = PreferenceHelper.getLimitForAllNumbersEnabled();
+                        if(phoneNumberData == null && isTimeLimitForAllNumbersEnabled){
+                            JSONObject newNumber = new JSONObject();
+                            newNumber.put("remaining_time", PreferenceHelper.getTimeLimitForAllNumbers());
+                            newNumber.put("limit", PreferenceHelper.getTimeLimitForAllNumbers());
+                            newNumber.put("last_updated", getTodayDate());
+
+                            PreferenceHelper.saveContact(numberWithoutCountryCode, newNumber.toString());
+                            phoneNumberData = newNumber.toString();
+                            Log.d("CallMonitorService", "Adding new number since limit for all numbers is enabled");
+                        }
+
                         if(phoneNumberData != null){
                             JSONObject jsonObject = new JSONObject(phoneNumberData);
                             int remaining_time = jsonObject.getInt("remaining_time");
@@ -106,6 +122,7 @@ public class CallMonitorService extends Service {
 
                             Log.d("CallMonitorService", "Call started. Starting timer.");
                         } else {
+
                             Log.d("callService", "number not present");
                         }
                     } else if (state == TelephonyManager.CALL_STATE_IDLE) {
@@ -292,5 +309,9 @@ public class CallMonitorService extends Service {
         if (telephonyManager != null && phoneStateListener != null) {
             telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
         }
+    }
+
+    private String getTodayDate(){
+        return new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
     }
 }
