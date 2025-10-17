@@ -6,6 +6,7 @@
     <li><b>Per-Contact Call Limits:</b> Define custom call durations for individual numbers.</li>
     <li><b>Automatic Hang-Up:</b> Calls are disconnected when the chosen time is reached.</li>
     <li><b>Easy Time Selection:</b> Choose limits using a bottom sheet scroll wheel for a smooth experience.</li>
+    <li><b>Global Call Limit:</b> Set default time limit for all calls.</li>
     <li><b>Persistent Storage:</b> Your limits remain saved until you decide to change or delete them.</li>
     <li><b>Flexible Editing:</b> Update or remove call limits anytime with ease.</li>
     <li><b>Emergency Buffer:</b> Add a few extra seconds for urgent or unexpected needs.</li>

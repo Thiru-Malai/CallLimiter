@@ -1,0 +1,3 @@
+## New Features
+- Added **Global Call Limit** option in Settings to apply limits for all contacts automatically.
+- Users can set a default time limit for all numbers without manual setup.
