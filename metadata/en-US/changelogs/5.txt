@@ -1,0 +1,2 @@
+## Added
+- Introduced a new monochrome app icon for a cleaner and more modern look.
