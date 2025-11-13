@@ -3,6 +3,14 @@
 Call Limiter is an Android application designed to help users set a time limit for phone calls to specific contacts. This app ensures calls do not exceed the defined duration, making it easier to manage call times effectively.
 
 <div align="center">
+  <a href="https://f-droid.org/packages/com.thirumalai.calllimiter">
+    <img src="https://f-droid.org/badge/get-it-on.png"
+    alt="Get it on F-Droid"
+    height="80">
+ </a>
+</div>
+
+<div align="center">
     <img src="./metadata/en-US/images/featureGraphic.png" alt="Feature Graphic" />
 </div>
 
@@ -19,6 +27,7 @@ Call Limiter is an Android application designed to help users set a time limit f
 - 🔢 **Set time limits** for specific phone numbers
 - 📴 **Auto-disconnect calls** when the limit is reached
 - 🎡 **Bottom sheet wheel selector** for choosing time duration
+- 🌐 **Global Call Limit** apply default time limit to all contacts automatically
 - 📂 **Persistent storage** – limits remain saved until deleted
 - 🗑️ **Delete or edit limits** for specific numbers anytime
 - 🎨 **Dark & Light themes** with system theme support
@@ -54,6 +63,7 @@ Call Limiter requires the following Android permissions:
 
 - 🌓 **Theme Selection** → Choose System / Light / Dark mode
 - ⏳ **Emergency Buffer Time** → Add 10s – 5min extra if needed
+- 🌐 **Global Call Limit** – Apply default time limit to all contacts automatically
 - 📜 **Permissions Page** → View and manage required app permissions
 - 🆘 **Support / Help** → Redirect to GitHub Issues for reporting bugs
 - ℹ️ **About** → Author, Repository, Change Log, Terms & Conditions and Privacy Policy
