@@ -110,8 +110,9 @@ public class CallMonitorService extends Service {
                         if(phoneNumberData != null){
                             JSONObject jsonObject = new JSONObject(phoneNumberData);
                             int remaining_time = jsonObject.getInt("remaining_time");
+                            boolean isBufferEnabled = PreferenceHelper.isBufferEnabled();
                             int bufferTime = PreferenceHelper.getBufferTime();
-                            if(remaining_time < 10){
+                            if(isBufferEnabled && remaining_time < 10 ){
                                 remaining_time = bufferTime;
                             }
 

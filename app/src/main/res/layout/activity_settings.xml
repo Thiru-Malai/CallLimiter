@@ -114,14 +114,29 @@
                 android:textSize="20sp"
                 android:padding="10dp"/>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/emergency_buffer_time"
-                android:textSize="16sp"
-                android:padding="8dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/emergency_buffer_time"
+                    android:textSize="16sp"
+                    android:padding="8dp"
+                    android:layout_weight="0.8"/>
+
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/buffer_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:padding="8dp"/>
+            </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/buffer_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -155,7 +170,7 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Limit for all numbers"
+                    android:text="@string/limit_for_all_numbers"
                     android:textSize="16sp"
                     android:padding="8dp"
                     android:layout_weight="0.8"/>

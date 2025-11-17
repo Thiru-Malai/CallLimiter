@@ -16,6 +16,8 @@ public class PreferenceHelper {
     private static final String LIMIT = "limit";
     private static final String SETTINGS_PREF = "settings_store";
     private static final String THEME_KEY = "theme_key";
+    private static final String BUFFER_TIME_ENABLED = "buffer_time_enabled";
+
     private static final String BUFFER_TIME = "buffer_key";
     private static final String TERMS_CONDITIONS = "terms_conditions_key";
     private static final String LIMIT_FOR_ALL_NUMBERS = "limit_for_all_numbers_key";
@@ -89,6 +91,14 @@ public class PreferenceHelper {
 
     public static String getTheme(){
         return settingsStore.getString(THEME_KEY, "System");
+    }
+
+    public static void saveBufferEnabled(boolean status){
+        settingsEditor.putBoolean(BUFFER_TIME_ENABLED, status).apply();
+    }
+
+    public static boolean isBufferEnabled(){
+        return settingsStore.getBoolean(BUFFER_TIME_ENABLED, true);
     }
 
     public static void saveBufferTime(int time){
