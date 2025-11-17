@@ -34,8 +34,8 @@ public class Settings extends AppCompatActivity {
     private TextView selectedThemeText, bufferValueText, timeLimit;
     private ImageView backBtn;
     private SeekBar bufferBar;
-    private MaterialSwitch switchBtn;
-    private boolean isChecked = false;
+    private MaterialSwitch switchBtn, disableTimerCancelSwitch;
+    private boolean isChecked = false, disableTimerCancelIsChecked = false;
     private final int[] BUFFER_VALUES = {10, 20, 30, 60, 120, 180, 240, 300};
 
     @Override
@@ -62,6 +62,7 @@ public class Settings extends AppCompatActivity {
         switchBtn = findViewById(R.id.limit_all_numbers_switch);
         timeLimitForAllNumbers = findViewById(R.id.time_limit_all_numbers_layout);
         timeLimit = findViewById(R.id.time_limit_all_numbers_text);
+        disableTimerCancelSwitch = findViewById(R.id.disable_timer_switch);
 
         isChecked = PreferenceHelper.getLimitForAllNumbersEnabled();
         int timeLimit1 = PreferenceHelper.getTimeLimitForAllNumbers();
@@ -96,6 +97,9 @@ public class Settings extends AppCompatActivity {
                 index = i;
             }
         }
+
+        disableTimerCancelIsChecked = PreferenceHelper.getDisableTimerCancelStatus();
+        disableTimerCancelSwitch.setChecked(disableTimerCancelIsChecked);
 
         selectedThemeText.setText(PreferenceHelper.getTheme());
         bufferBar.setProgress(index);
@@ -212,6 +216,13 @@ public class Settings extends AppCompatActivity {
                     public void onTimerReset() { }
                 });
                 bottomSheet.show(getSupportFragmentManager(), "TimerBottomSheet");
+        });
+
+        disableTimerCancelSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                PreferenceHelper.saveDisableTimerCancelStatus(b);
+            }
         });
     }
 

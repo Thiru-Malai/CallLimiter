@@ -195,6 +195,26 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/disable_timer_cancellation_during_call"
+                    android:textSize="16sp"
+                    android:padding="8dp"
+                    android:layout_weight="0.8"/>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/disable_timer_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:padding="8dp" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
