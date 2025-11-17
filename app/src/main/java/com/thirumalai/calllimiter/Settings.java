@@ -30,12 +30,12 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class Settings extends AppCompatActivity {
-    private LinearLayout layoutTheme, githubIssues, permissions, about, timeLimitForAllNumbers;
+    private LinearLayout layoutTheme, githubIssues, permissions, about, timeLimitForAllNumbers, bufferLayout;
     private TextView selectedThemeText, bufferValueText, timeLimit;
     private ImageView backBtn;
     private SeekBar bufferBar;
-    private MaterialSwitch switchBtn;
-    private boolean isChecked = false;
+    private MaterialSwitch switchBtn, bufferSwitchBtn;
+    private boolean isChecked = false, isBufferEnabled = true;
     private final int[] BUFFER_VALUES = {10, 20, 30, 60, 120, 180, 240, 300};
 
     @Override
@@ -57,6 +57,8 @@ public class Settings extends AppCompatActivity {
         githubIssues = findViewById(R.id.github_issues);
         permissions = findViewById(R.id.permissions);
         about = findViewById(R.id.about_settings);
+        bufferLayout = findViewById(R.id.buffer_layout);
+        bufferSwitchBtn = findViewById(R.id.buffer_switch);
         bufferBar = findViewById(R.id.emergency_buffer_time_seek_bar);
         bufferValueText = findViewById(R.id.emergency_buffer_time_text);
         switchBtn = findViewById(R.id.limit_all_numbers_switch);
@@ -86,6 +88,14 @@ public class Settings extends AppCompatActivity {
             timeLimitForAllNumbers.setVisibility(View.VISIBLE);
         } else {
             timeLimitForAllNumbers.setVisibility(View.GONE);
+        }
+
+        isBufferEnabled = PreferenceHelper.isBufferEnabled();
+        bufferSwitchBtn.setChecked(isBufferEnabled);
+        if(isBufferEnabled){
+            bufferLayout.setVisibility(View.VISIBLE);
+        } else {
+            bufferLayout.setVisibility(View.GONE);
         }
 
         int bufferTime = PreferenceHelper.getBufferTime();
@@ -212,6 +222,18 @@ public class Settings extends AppCompatActivity {
                     public void onTimerReset() { }
                 });
                 bottomSheet.show(getSupportFragmentManager(), "TimerBottomSheet");
+        });
+
+        bufferSwitchBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                PreferenceHelper.saveBufferEnabled(b);
+                if(b){
+                    bufferLayout.setVisibility(View.VISIBLE);
+                } else {
+                    bufferLayout.setVisibility(View.GONE);
+                }
+            }
         });
     }
 
