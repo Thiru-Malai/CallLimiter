@@ -62,4 +62,5 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="view_privacy_policy">View Privacy Policy</string>
     <string name="limit_for_all_numbers">Limit for all numbers</string>
+    <string name="disable_timer_cancellation_during_call">Disable timer cancellation during call</string>
 </resources>

@@ -209,7 +209,10 @@ public class CallMonitorService extends Service {
         public void run() {
             if (isTimerRunning) {
                 elapsedTime++;
-                updateTimerNotification();
+                boolean isTimerCancelDisabled = PreferenceHelper.getDisableTimerCancelStatus();
+                if(!isTimerCancelDisabled) {
+                    updateTimerNotification();
+                }
                 handler.postDelayed(this, 1000); // Repeat every second
             }
         }
