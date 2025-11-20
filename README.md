@@ -8,6 +8,11 @@ Call Limiter is an Android application designed to help users set a time limit f
     alt="Get it on F-Droid"
     height="80">
  </a>
+  
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/Thiru-Malai/CallLimiter/total?style=for-the-badge)
+![F-Droid Version](https://img.shields.io/f-droid/v/com.thirumalai.calllimiter?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/Buy_me_a_coffee-Support-brightgreen?style=for-the-badge&logo=buymeacoffee&logoColor=%23ffffff&link=https%3A%2F%2Fbuymeacoffee.com%2Fthirumalaikg)
+
 </div>
 
 <div align="center">
