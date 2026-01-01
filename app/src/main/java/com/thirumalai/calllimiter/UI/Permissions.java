@@ -1,4 +1,4 @@
-package com.thirumalai.calllimiter.ui;
+package com.thirumalai.calllimiter.UI;
 
 import android.Manifest;
 import android.content.Intent;
@@ -124,7 +124,7 @@ public class Permissions extends AppCompatActivity {
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Permissions.this, com.thirumalai.calllimiter.ui.Settings.class);
+                Intent intent = new Intent(Permissions.this, com.thirumalai.calllimiter.UI.Settings.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }

@@ -1,4 +1,4 @@
-package com.thirumalai.calllimiter.ui;
+package com.thirumalai.calllimiter.UI;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -20,9 +20,9 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.thirumalai.calllimiter.BottomSheets.TimerBottomSheet;
-import com.thirumalai.calllimiter.service.CallMonitorService;
+import com.thirumalai.calllimiter.Service.CallMonitorService;
 import com.thirumalai.calllimiter.MainActivity;
-import com.thirumalai.calllimiter.data.PreferenceHelper;
+import com.thirumalai.calllimiter.Data.PreferenceHelper;
 import com.thirumalai.calllimiter.R;
 
 import java.util.Map;

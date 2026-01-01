@@ -1,4 +1,4 @@
-package com.thirumalai.calllimiter.ui;
+package com.thirumalai.calllimiter.UI;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;

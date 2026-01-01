@@ -37,10 +37,10 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.thirumalai.calllimiter.BottomSheets.TimerBottomSheet;
-import com.thirumalai.calllimiter.data.PreferenceHelper;
-import com.thirumalai.calllimiter.service.CallMonitorService;
-import com.thirumalai.calllimiter.ui.OnboardingActivity;
-import com.thirumalai.calllimiter.ui.Settings;
+import com.thirumalai.calllimiter.Data.PreferenceHelper;
+import com.thirumalai.calllimiter.Service.CallMonitorService;
+import com.thirumalai.calllimiter.UI.OnboardingActivity;
+import com.thirumalai.calllimiter.UI.Settings;
 
 import org.json.JSONException;
 import org.json.JSONObject;

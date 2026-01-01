@@ -1,4 +1,4 @@
-package com.thirumalai.calllimiter.worker;
+package com.thirumalai.calllimiter.Worker;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.thirumalai.calllimiter.service.CallMonitorService;
+import com.thirumalai.calllimiter.Service.CallMonitorService;
 
 public class CallMonitorWorker extends Worker {
     public CallMonitorWorker(@NonNull Context context, @NonNull WorkerParameters params) {
