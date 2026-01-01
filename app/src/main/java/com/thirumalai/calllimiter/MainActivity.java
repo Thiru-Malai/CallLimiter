@@ -2,8 +2,10 @@ package com.thirumalai.calllimiter;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.Insets;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -19,6 +21,9 @@ import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -57,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button setLimit, selectFromContacts;
     private int selectedHour = -1, selectedMinute = -1;
-    private TextInputEditText phoneNumberField;
+    private TextInputEditText phoneNumberField, contactNameField;
     boolean isPhoneAvailable = false, isTimeAvailable = false;
     private static final int NOTIFICATION_PERMISSION_CODE = 1001;
     private static final int PICK_CONTACT_REQUEST = 1;
@@ -86,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         setLimit = findViewById(R.id.set_limit_button);
         selectFromContacts = findViewById(R.id.select_contact_button);
         phoneNumberField = findViewById(R.id.phone_number_input);
+        contactNameField = findViewById(R.id.contact_name);
         settings = findViewById(R.id.settings_button);
         // Check for last updated date change
         checkAndSetInitialDate();
@@ -143,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String phoneNumber =  Objects.requireNonNull(phoneNumberField.getText()).toString().trim();
+                String contactName = Objects.requireNonNull(phoneNumberField.getText()).toString().trim();
                 if(phoneNumber.isEmpty() || selectedHour == -1 || selectedMinute == -1){
                     Toast.makeText(MainActivity.this, "Please make sure phone number and time limit is set.", Toast.LENGTH_SHORT).show();
                     return;
@@ -152,6 +159,9 @@ public class MainActivity extends AppCompatActivity {
                 // Save the phone number as the key and time limit as the value
                 JSONObject jsonObject = new JSONObject();
                 try{
+                    if(!contactName.isEmpty()) {
+                        jsonObject.put("name", contactName);
+                    }
                     jsonObject.put("limit", totalSeconds);
                     jsonObject.put("remaining_time", totalSeconds);
                     jsonObject.put("last_updated", getTodayDate());
@@ -164,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
                 isPhoneAvailable = false;
                 phoneNumberField.setText(null);
+                contactNameField.setText(null);
                 setLimit.setText(R.string.set_limit);
 
                 // Resetting time
@@ -274,8 +285,9 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(phoneNumberData);
 
                     int remaining_time = jsonObject.getInt("remaining_time");
+                    String contact_name = jsonObject.getString("name");
 
-                    createLayout(savedLimitsLayout, phoneNumber, remaining_time);
+                    createLayout(savedLimitsLayout, phoneNumber, remaining_time, contact_name);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -285,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void createLayout(LinearLayout savedLimitsLayout, String phoneNumber, int remaining_time){
+    private void createLayout(LinearLayout savedLimitsLayout, String phoneNumber, int remaining_time, String contact_name){
         int hours = remaining_time / 3600;
         int minutes = (remaining_time % 3600) / 60;
         int seconds = remaining_time % 60;
@@ -306,18 +318,43 @@ public class MainActivity extends AppCompatActivity {
         valueLayout.setOrientation(LinearLayout.VERTICAL);
         valueLayout.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 0.8F));
 
-        TextView number = new TextView(this);
-        number.setText(phoneNumber);
-        number.setTextSize(20);
-        number.setTypeface(Typeface.DEFAULT_BOLD);
-        number.setTag("number");
+        // Horizontal Linear Layout to add an edit button
+        LinearLayout header = new LinearLayout(this);
+        header.setOrientation(LinearLayout.HORIZONTAL);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+
+        TextView identifier = new TextView(this);
+        if(!contact_name.isEmpty()){
+            identifier.setText(contact_name);
+        } else{
+            identifier.setText(phoneNumber);
+        }
+        identifier.setTextSize(20);
+        identifier.setTypeface(Typeface.DEFAULT_BOLD);
+        identifier.setTag("number");
 //        number.setId(View.generateViewId());
+
+        ContextThemeWrapper wrapper = new ContextThemeWrapper(this, R.style.Widget_App_Button_IconOnly);
+
+        MaterialButton iconButton = new MaterialButton(wrapper, null, R.style.Widget_App_Button_IconOnly);
+        iconButton.setBackgroundColor(Color.TRANSPARENT);
+        iconButton.setIconResource(R.drawable.edit_24px);
+        iconButton.setText("");
+        iconButton.setStrokeWidth(0);
+
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true);
+        int iconColor = typedValue.data;
+        iconButton.setIconTint(ColorStateList.valueOf(iconColor));
+
+        header.addView(identifier);
+        header.addView(iconButton);
 
         TextView time = new TextView(this);
         time.setText(hours + " hrs " + minutes + " mins " + seconds + " seconds");
         time.setTextSize(16);
 
-        valueLayout.addView(number);
+        valueLayout.addView(header);
         valueLayout.addView(time);
 
         valueLayout.setOnLongClickListener(new View.OnLongClickListener() {
