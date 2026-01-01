@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String phoneNumber =  Objects.requireNonNull(phoneNumberField.getText()).toString().trim();
-                String contactName = Objects.requireNonNull(phoneNumberField.getText()).toString().trim();
+                String contactName = Objects.requireNonNull(contactNameField.getText()).toString().trim();
                 if(phoneNumber.isEmpty() || selectedHour == -1 || selectedMinute == -1){
                     Toast.makeText(MainActivity.this, "Please make sure phone number and time limit is set.", Toast.LENGTH_SHORT).show();
                     return;
