@@ -1,4 +1,4 @@
-package com.thirumalai.calllimiter;
+package com.thirumalai.calllimiter.ui;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -10,9 +10,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.thirumalai.calllimiter.R;
 
 public class About extends AppCompatActivity {
     TextView version;

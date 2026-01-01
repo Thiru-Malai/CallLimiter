@@ -1,4 +1,4 @@
-package com.thirumalai.calllimiter;
+package com.thirumalai.calllimiter.ui;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +8,11 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
+
+import com.thirumalai.calllimiter.MainActivity;
+import com.thirumalai.calllimiter.Fragment.OnboardingAdapter;
+import com.thirumalai.calllimiter.data.PreferenceHelper;
+import com.thirumalai.calllimiter.R;
 
 public class OnboardingActivity extends AppCompatActivity {
     private ViewPager2 viewPager;

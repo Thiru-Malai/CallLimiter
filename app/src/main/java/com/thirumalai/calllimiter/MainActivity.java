@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.graphics.Insets;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -36,12 +35,15 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.thirumalai.calllimiter.BottomSheets.TimerBottomSheet;
+import com.thirumalai.calllimiter.data.PreferenceHelper;
+import com.thirumalai.calllimiter.service.CallMonitorService;
+import com.thirumalai.calllimiter.ui.OnboardingActivity;
+import com.thirumalai.calllimiter.ui.Settings;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

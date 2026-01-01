@@ -1,4 +1,4 @@
-package com.thirumalai.calllimiter;
+package com.thirumalai.calllimiter.ui;
 
 import android.Manifest;
 import android.content.Intent;
@@ -14,14 +14,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.thirumalai.calllimiter.R;
 
 public class Permissions extends AppCompatActivity {
     private LinearLayout permissionContainer, permissionsSystemHandled;
@@ -126,7 +124,7 @@ public class Permissions extends AppCompatActivity {
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Permissions.this, com.thirumalai.calllimiter.Settings.class);
+                Intent intent = new Intent(Permissions.this, com.thirumalai.calllimiter.ui.Settings.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
