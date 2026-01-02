@@ -626,6 +626,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     phoneNumberField.setText(numberWithoutCountryCode);
+                    contactNameField.setText(name);
                 }
             } catch (Exception e) {
                 if(e.toString().contains("Error type: INVALID_COUNTRY_CODE.")){
