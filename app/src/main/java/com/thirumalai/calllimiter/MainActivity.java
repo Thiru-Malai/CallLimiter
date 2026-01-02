@@ -1,6 +1,7 @@
 package com.thirumalai.calllimiter;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -19,15 +20,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.provider.ContactsContract;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -323,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
         header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
 
-        TextView identifier = new TextView(this);
+        EditText identifier = new EditText(this);
         if(!contact_name.isEmpty()){
             identifier.setText(contact_name);
         } else{
@@ -332,11 +339,19 @@ public class MainActivity extends AppCompatActivity {
         identifier.setTextSize(20);
         identifier.setTypeface(Typeface.DEFAULT_BOLD);
         identifier.setTag("number");
+        identifier.setBackground(null);
+        identifier.setFocusable(false);
+        identifier.setPadding(0, 0, 0, 0);
+        identifier.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.8f));
+        identifier.setSingleLine(true);
+        identifier.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        identifier.setInputType(InputType.TYPE_CLASS_TEXT);
 //        number.setId(View.generateViewId());
 
         ContextThemeWrapper wrapper = new ContextThemeWrapper(this, R.style.Widget_App_Button_IconOnly);
 
         MaterialButton iconButton = new MaterialButton(wrapper, null, R.style.Widget_App_Button_IconOnly);
+        iconButton.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.2f));
         iconButton.setBackgroundColor(Color.TRANSPARENT);
         iconButton.setIconResource(R.drawable.edit_24px);
         iconButton.setText("");
@@ -346,6 +361,64 @@ public class MainActivity extends AppCompatActivity {
         getTheme().resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true);
         int iconColor = typedValue.data;
         iconButton.setIconTint(ColorStateList.valueOf(iconColor));
+
+        iconButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isCurrentlyEditing = iconButton.getTag() != null && (boolean) iconButton.getTag();
+
+                if(!isCurrentlyEditing){
+                    iconButton.setTag(true);
+                    iconButton.setIconResource(R.drawable.check_24px);
+
+                    enableEditing(identifier);
+                } else {
+                    iconButton.setTag(false);
+                    iconButton.setIconResource(R.drawable.edit_24px);
+
+                    String contactName = Objects.requireNonNull(identifier.getText()).toString().trim();
+                    if(contactName.isEmpty()){
+                       identifier.setText(phoneNumber);
+                    }
+                    String phoneNumberData = PreferenceHelper.getContact(phoneNumber);
+                    if(phoneNumberData != null){
+                        // Saving name
+                        try {
+                            JSONObject jsonObject = new JSONObject(phoneNumberData);
+                            jsonObject.put("name", contactName);
+                            PreferenceHelper.saveContact(phoneNumber, jsonObject.toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    disableEditing(identifier);
+                }
+            }
+        });
+
+        identifier.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i == EditorInfo.IME_ACTION_DONE){
+                    disableEditing(identifier);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        identifier.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                boolean isCurrentlyEditing = iconButton.getTag() != null && (boolean) iconButton.getTag();
+                if (!hasFocus && isCurrentlyEditing) {
+                    iconButton.performClick();
+                }
+            }
+        });
+
+
 
         header.addView(identifier);
         header.addView(iconButton);
@@ -583,5 +656,27 @@ public class MainActivity extends AppCompatActivity {
             default:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
+    }
+
+    private void enableEditing(EditText editText) {
+        editText.setFocusableInTouchMode(true);
+        editText.setFocusable(true);
+        editText.setSelection(editText.getText().length());
+        editText.requestFocus();
+
+        editText.post(() -> {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if(imm != null){
+                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+    }
+
+    private void disableEditing(EditText editText) {
+        editText.setFocusable(false);
+        editText.setFocusableInTouchMode(false);
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 }
