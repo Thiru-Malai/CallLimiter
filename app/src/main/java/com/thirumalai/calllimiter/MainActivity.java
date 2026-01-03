@@ -433,8 +433,6 @@ public class MainActivity extends AppCompatActivity {
         valueLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                TextView numberView = view.findViewWithTag("number");
-                String listNumber = numberView.getText().toString();
                 TimerBottomSheet bottomSheet = new TimerBottomSheet(new TimerBottomSheet.OnTimeSelectedListener() {
                     @Override
                     public void onTimeSelected(int hours, int minutes) {
@@ -442,13 +440,13 @@ public class MainActivity extends AppCompatActivity {
                         selectedHour = hours;
                         selectedMinute = minutes;
 
-                        String phoneNumberData = PreferenceHelper.getContact(listNumber);
+                        String phoneNumberData = PreferenceHelper.getContact(phoneNumber);
 
                         if(phoneNumberData != null){
                             // Update remaining time
                             try {
                                 JSONObject jsonObject = updateLimit(phoneNumberData);
-                                PreferenceHelper.saveContact(listNumber, jsonObject.toString());
+                                PreferenceHelper.saveContact(phoneNumber, jsonObject.toString());
 
                                 updateSavedLimitsUI("Refresh");
 
@@ -493,7 +491,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onTimerReset() {
                         isTimeAvailable = false;
                     }
-                });
+                }, phoneNumber, contact_name);
                 bottomSheet.show(getSupportFragmentManager(), "TimerBottomSheet");
                 return false;
             }
