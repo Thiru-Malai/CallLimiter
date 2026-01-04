@@ -1,12 +1,9 @@
-package com.thirumalai.calllimiter;
+package com.thirumalai.calllimiter.Fragment;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-
-import com.thirumalai.calllimiter.Fragment.Intro;
-import com.thirumalai.calllimiter.Fragment.Permissions;
 
 public class OnboardingAdapter extends FragmentStateAdapter {
     public OnboardingAdapter(FragmentActivity fa) {

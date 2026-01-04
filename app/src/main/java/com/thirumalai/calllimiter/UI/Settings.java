@@ -1,4 +1,4 @@
-package com.thirumalai.calllimiter;
+package com.thirumalai.calllimiter.UI;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -14,19 +14,17 @@ import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.materialswitch.MaterialSwitch;
+import com.thirumalai.calllimiter.BottomSheets.TimerBottomSheet;
+import com.thirumalai.calllimiter.Service.CallMonitorService;
+import com.thirumalai.calllimiter.MainActivity;
+import com.thirumalai.calllimiter.Data.PreferenceHelper;
+import com.thirumalai.calllimiter.R;
 
-import org.w3c.dom.Text;
-
-import java.util.Arrays;
 import java.util.Map;
 
 public class Settings extends AppCompatActivity {
