@@ -13,6 +13,7 @@ import com.thirumalai.calllimiter.MainActivity;
 import com.thirumalai.calllimiter.Fragment.OnboardingAdapter;
 import com.thirumalai.calllimiter.Data.PreferenceHelper;
 import com.thirumalai.calllimiter.R;
+import com.thirumalai.calllimiter.Utils.SystemBarHelper;
 
 public class OnboardingActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
@@ -23,6 +24,9 @@ public class OnboardingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding);
+
+        View rootView = findViewById(android.R.id.content);
+        SystemBarHelper.setupStatusBarAppearance(getWindow(), getResources(), rootView);
 
         PreferenceHelper.init(this);
 
