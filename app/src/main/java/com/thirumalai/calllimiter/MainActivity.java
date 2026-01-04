@@ -292,7 +292,10 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(phoneNumberData);
 
                     int remaining_time = jsonObject.getInt("remaining_time");
-                    String contact_name = jsonObject.getString("name");
+                    String contact_name = "";
+                    if(jsonObject.has("name")){
+                        contact_name = jsonObject.getString("name");
+                    }
 
                     createLayout(savedLimitsLayout, phoneNumber, remaining_time, contact_name);
                 } catch (Exception e) {
@@ -394,6 +397,8 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(phoneNumberData);
                             jsonObject.put("name", contactName);
                             PreferenceHelper.saveContact(phoneNumber, jsonObject.toString());
+
+                            updateSavedLimitsUI("Refresh");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
