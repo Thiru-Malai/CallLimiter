@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Insets;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -27,6 +28,7 @@ import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
@@ -183,6 +185,8 @@ public class MainActivity extends AppCompatActivity {
                 phoneNumberField.setText(null);
                 contactNameField.setText(null);
                 setLimit.setText(R.string.set_limit);
+
+                clearInputFocus();
 
                 // Resetting time
                 selectedHour = -1;
@@ -700,5 +704,37 @@ public class MainActivity extends AppCompatActivity {
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+    }
+
+    private void clearInputFocus(){
+        if(phoneNumberField != null){
+            phoneNumberField.clearFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if(imm != null){
+                imm.hideSoftInputFromWindow(phoneNumberField.getWindowToken(), 0);
+            }
+        }
+        if(contactNameField != null){
+            contactNameField.clearFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if(imm != null){
+                imm.hideSoftInputFromWindow(contactNameField.getWindowToken(), 0);
+            }
+        }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event){
+        if(event.getAction() == MotionEvent.ACTION_DOWN){
+            View v = getCurrentFocus();
+            if(v instanceof TextInputEditText){
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if(!outRect.contains((int)event.getRawX(), (int)event.getRawY())){
+                    clearInputFocus();
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event);
     }
 }
