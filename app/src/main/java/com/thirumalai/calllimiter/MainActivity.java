@@ -433,6 +433,10 @@ public class MainActivity extends AppCompatActivity {
         valueLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                boolean isCurrentlyEditing = iconButton.getTag() != null && (boolean) iconButton.getTag();
+                if (isCurrentlyEditing) {
+                    return true;
+                }
                 TimerBottomSheet bottomSheet = new TimerBottomSheet(new TimerBottomSheet.OnTimeSelectedListener() {
                     @Override
                     public void onTimeSelected(int hours, int minutes) {
