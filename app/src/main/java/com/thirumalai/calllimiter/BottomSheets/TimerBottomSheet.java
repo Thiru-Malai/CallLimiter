@@ -87,7 +87,7 @@ public class TimerBottomSheet extends BottomSheetDialogFragment {
             int selectedHours = hourPicker.getValue();
             int selectedMinutes = Integer.parseInt(minuteValues[minutePicker.getValue()]);
             if(selectedHours == 0 && selectedMinutes == 0){
-                Toast.makeText(getActivity(), "Please choose more than 5 minutes", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Please choose a proper limit", Toast.LENGTH_SHORT).show();
             } else{
                 if (timeSelectedListener != null) {
                     timeSelectedListener.onTimeSelected(selectedHours, selectedMinutes);
