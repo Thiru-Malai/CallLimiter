@@ -356,8 +356,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Disable Touch Events in Non-Edit Mode to Handle Bottom Sheets
         identifier.setFocusableInTouchMode(false);
+        int originalColor = identifier.getCurrentTextColor();
         identifier.setEnabled(false);
-        identifier.setTextColor(Color.WHITE);
+        identifier.setTextColor(originalColor);
         identifier.setClickable(false);
         identifier.setLongClickable(false);
 //        number.setId(View.generateViewId());
@@ -697,8 +698,9 @@ public class MainActivity extends AppCompatActivity {
     private void disableEditing(EditText editText) {
         editText.setFocusable(false);
         editText.setFocusableInTouchMode(false);
+        int originalColor = editText.getCurrentTextColor();
         editText.setEnabled(false);
-        editText.setTextColor(Color.WHITE);
+        editText.setTextColor(originalColor);
         editText.setClickable(false);
         editText.setLongClickable(false);
 
