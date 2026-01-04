@@ -346,6 +346,13 @@ public class MainActivity extends AppCompatActivity {
         identifier.setSingleLine(true);
         identifier.setImeOptions(EditorInfo.IME_ACTION_DONE);
         identifier.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        // Disable Touch Events in Non-Edit Mode to Handle Bottom Sheets
+        identifier.setFocusableInTouchMode(false);
+        identifier.setEnabled(false);
+        identifier.setTextColor(Color.WHITE);
+        identifier.setClickable(false);
+        identifier.setLongClickable(false);
 //        number.setId(View.generateViewId());
 
         ContextThemeWrapper wrapper = new ContextThemeWrapper(this, R.style.Widget_App_Button_IconOnly);
@@ -664,6 +671,9 @@ public class MainActivity extends AppCompatActivity {
     private void enableEditing(EditText editText) {
         editText.setFocusableInTouchMode(true);
         editText.setFocusable(true);
+        editText.setEnabled(true);
+        editText.setClickable(true);
+        editText.setLongClickable(true);
         editText.setSelection(editText.getText().length());
         editText.requestFocus();
 
@@ -678,6 +688,10 @@ public class MainActivity extends AppCompatActivity {
     private void disableEditing(EditText editText) {
         editText.setFocusable(false);
         editText.setFocusableInTouchMode(false);
+        editText.setEnabled(false);
+        editText.setTextColor(Color.WHITE);
+        editText.setClickable(false);
+        editText.setLongClickable(false);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
