@@ -21,6 +21,7 @@
             android:layout_gravity="center"
             android:text="0000000000  John Doe"
             android:textSize="18sp"
+            android:textAlignment="center"
             android:layout_marginTop="10dp" />
 
     <LinearLayout
