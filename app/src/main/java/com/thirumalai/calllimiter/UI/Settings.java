@@ -24,6 +24,7 @@ import com.thirumalai.calllimiter.Service.CallMonitorService;
 import com.thirumalai.calllimiter.MainActivity;
 import com.thirumalai.calllimiter.Data.PreferenceHelper;
 import com.thirumalai.calllimiter.R;
+import com.thirumalai.calllimiter.Utils.SystemBarHelper;
 
 import java.util.Map;
 
@@ -41,11 +42,9 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_settings);
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
+
+        View rootView = findViewById(android.R.id.content);
+        SystemBarHelper.setupStatusBarAppearance(getWindow(), getResources(), rootView);
 
         PreferenceHelper.init(this);
 

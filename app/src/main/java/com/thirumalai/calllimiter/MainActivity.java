@@ -55,6 +55,7 @@ import com.thirumalai.calllimiter.Data.PreferenceHelper;
 import com.thirumalai.calllimiter.Service.CallMonitorService;
 import com.thirumalai.calllimiter.UI.OnboardingActivity;
 import com.thirumalai.calllimiter.UI.Settings;
+import com.thirumalai.calllimiter.Utils.SystemBarHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,7 +95,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
-        setupStatusBarAppearance();
+
+        View rootView = findViewById(android.R.id.content);
+        SystemBarHelper.setupStatusBarAppearance(getWindow(), getResources(), rootView);
 
         Button timeLimitButton = findViewById(R.id.set_time_limit_button);
         setLimit = findViewById(R.id.set_limit_button);
@@ -567,35 +570,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        setupStatusBarAppearance();
-    }
-
-    private void setupStatusBarAppearance() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            // Let app draw behind system bars
-            getWindow().setDecorFitsSystemWindows(false);
-
-            final View rootView = findViewById(android.R.id.content);
-
-            // Handle insets to avoid status bar overlap
-            rootView.setOnApplyWindowInsetsListener((v, insets) -> {
-                Insets systemBarsInsets = insets.getInsets(WindowInsets.Type.systemBars());
-                v.setPadding(0, systemBarsInsets.top, 0, 0); // Top padding only
-                return insets;
-            });
-
-            // Dynamically adjust status bar text/icons color based on theme
-            WindowInsetsController controller = getWindow().getInsetsController();
-            if (controller != null) {
-                boolean isDarkTheme = (getResources().getConfiguration().uiMode
-                        & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
-
-                controller.setSystemBarsAppearance(
-                        isDarkTheme ? 0 : WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                );
-            }
-        }
+        View rootView = findViewById(android.R.id.content);
+        SystemBarHelper.setupStatusBarAppearance(getWindow(), getResources(), rootView);
     }
 
     private void checkAndSetInitialDate() {
