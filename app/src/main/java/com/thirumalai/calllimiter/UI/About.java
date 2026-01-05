@@ -1,18 +1,19 @@
-package com.thirumalai.calllimiter;
+package com.thirumalai.calllimiter.UI;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.thirumalai.calllimiter.R;
+import com.thirumalai.calllimiter.Utils.SystemBarHelper;
 
 public class About extends AppCompatActivity {
     TextView version;
@@ -24,11 +25,10 @@ public class About extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_about);
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.about_layout), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
+
+        View rootView = findViewById(android.R.id.content);
+        SystemBarHelper.setupStatusBarAppearance(getWindow(), getResources(), rootView);
+
 
         version = findViewById(R.id.version);
         sponsor = findViewById(R.id.sponsor);
