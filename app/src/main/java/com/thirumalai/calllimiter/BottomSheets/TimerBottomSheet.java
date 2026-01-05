@@ -1,4 +1,4 @@
-package com.thirumalai.calllimiter;
+package com.thirumalai.calllimiter.BottomSheets;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,10 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.textview.MaterialTextView;
+import com.thirumalai.calllimiter.R;
 
 public class TimerBottomSheet extends BottomSheetDialogFragment {
     private NumberPicker hourPicker, minutePicker;
     private Button btnDeleteTimer, btnOk, btnCancel;
+    private MaterialTextView displayPhoneNumberAndName;
+    private String phoneNumber = "", name = "";
     private OnTimeSelectedListener timeSelectedListener;
 
     // Interface to send data back to MainActivity
@@ -27,8 +31,14 @@ public class TimerBottomSheet extends BottomSheetDialogFragment {
     public TimerBottomSheet() {
         // Required empty public constructor
     }
+
     public TimerBottomSheet(OnTimeSelectedListener listener) {
         this.timeSelectedListener = listener;
+    }
+    public TimerBottomSheet(OnTimeSelectedListener listener, String phoneNumber, String name) {
+        this.timeSelectedListener = listener;
+        this.phoneNumber = phoneNumber;
+        this.name = name;
     }
 
     @Nullable
@@ -41,6 +51,17 @@ public class TimerBottomSheet extends BottomSheetDialogFragment {
         btnDeleteTimer = view.findViewById(R.id.btnDeleteTimer);
         btnOk = view.findViewById(R.id.btnOk);
         btnCancel = view.findViewById(R.id.btnCancel);
+        displayPhoneNumberAndName = view.findViewById(R.id.phone_number_name);
+
+        if(!this.phoneNumber.isEmpty()){
+            if(!this.name.isEmpty()){
+                displayPhoneNumberAndName.setText(this.phoneNumber + "  " + this.name);
+            } else {
+                displayPhoneNumberAndName.setText(this.phoneNumber);
+            }
+        } else {
+            displayPhoneNumberAndName.setVisibility(View.GONE);
+        }
 
         // Configure Hour Picker (1 to 24)
         hourPicker.setMinValue(0);
@@ -66,7 +87,7 @@ public class TimerBottomSheet extends BottomSheetDialogFragment {
             int selectedHours = hourPicker.getValue();
             int selectedMinutes = Integer.parseInt(minuteValues[minutePicker.getValue()]);
             if(selectedHours == 0 && selectedMinutes == 0){
-                Toast.makeText(getActivity(), "Please choose more than 5 minutes", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Please choose a proper limit", Toast.LENGTH_SHORT).show();
             } else{
                 if (timeSelectedListener != null) {
                     timeSelectedListener.onTimeSelected(selectedHours, selectedMinutes);

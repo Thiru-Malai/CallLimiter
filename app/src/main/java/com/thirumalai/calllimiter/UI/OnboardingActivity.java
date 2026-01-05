@@ -1,4 +1,4 @@
-package com.thirumalai.calllimiter;
+package com.thirumalai.calllimiter.UI;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +9,12 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.thirumalai.calllimiter.MainActivity;
+import com.thirumalai.calllimiter.Fragment.OnboardingAdapter;
+import com.thirumalai.calllimiter.Data.PreferenceHelper;
+import com.thirumalai.calllimiter.R;
+import com.thirumalai.calllimiter.Utils.SystemBarHelper;
+
 public class OnboardingActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private Button nextButton, skipButton, readTermsAndConditions;
@@ -18,6 +24,9 @@ public class OnboardingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding);
+
+        View rootView = findViewById(android.R.id.content);
+        SystemBarHelper.setupStatusBarAppearance(getWindow(), getResources(), rootView);
 
         PreferenceHelper.init(this);
 
