@@ -1,7 +1,0 @@
-## New Features
-- Added support to save call limits with contact names
-- Existing limited numbers can be renamed
-- Contact names will be auto-populated when selecting from contacts and can be renamed before setting the limit
-
-## Improvements
-- Improved text field behavior to automatically lose focus after saving a limit or tapping elsewhere

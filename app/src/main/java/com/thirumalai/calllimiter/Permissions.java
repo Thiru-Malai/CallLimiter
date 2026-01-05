@@ -1,4 +1,4 @@
-package com.thirumalai.calllimiter.UI;
+package com.thirumalai.calllimiter;
 
 import android.Manifest;
 import android.content.Intent;
@@ -14,13 +14,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import com.thirumalai.calllimiter.R;
-import com.thirumalai.calllimiter.Utils.SystemBarHelper;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 public class Permissions extends AppCompatActivity {
     private LinearLayout permissionContainer, permissionsSystemHandled;
@@ -31,9 +32,11 @@ public class Permissions extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_permissions);
-
-        View rootView = findViewById(android.R.id.content);
-        SystemBarHelper.setupStatusBarAppearance(getWindow(), getResources(), rootView);
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.permissions_layout), (v, insets) -> {
+//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+//            return insets;
+//        });
 
         back_btn = findViewById(R.id.back_btn_permissions);
 
@@ -123,7 +126,7 @@ public class Permissions extends AppCompatActivity {
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Permissions.this, com.thirumalai.calllimiter.UI.Settings.class);
+                Intent intent = new Intent(Permissions.this, com.thirumalai.calllimiter.Settings.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
