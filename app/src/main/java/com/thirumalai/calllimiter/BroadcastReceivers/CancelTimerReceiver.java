@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.thirumalai.calllimiter.CallMonitorService;
+import com.thirumalai.calllimiter.Service.CallMonitorService;
 
 public class CancelTimerReceiver extends BroadcastReceiver {
 

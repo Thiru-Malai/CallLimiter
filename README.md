@@ -41,7 +41,7 @@ Call Limiter is an Android application designed to help users set a time limit f
 
 ## ⚒ How It Works
 
-1. **Enter a Phone Number**: Manually input a valid number or select from contacts.
+1. **Enter a Phone Number**: Manually enter a number or select a contact, with the option to add or edit the contact name.
 2. **Set a Time Limit**: Choose a duration using the bottom sheet timer.
 3. **Save the Limit**: The app stores the number and its corresponding time limit.
 4. **Monitor Calls**: Calls to the saved number will be restricted based on the set time.
@@ -84,6 +84,9 @@ Want to make **Call Limiter** even better? Here’s how you can help:
 ## ❤️ Sponsor
 The app is open-source, free to use, and contains no ads. Your support helps sustain full-time development.
 - 🍵 [Buy Me A Coffee](https://www.buymeacoffee.com/thirumalaikg)
+- ☕ [Kofi](https://ko-fi.com/thirumalaikg)
+- 💲 [Liberapay](https://en.liberapay.com/thirumalaikg/)
+- BTC - `bc1q26ag0k77ez63pd0zu492vj7dncfqmknkk7sjfh`
 
 ## 💡 Credits
 - [FoodYou](https://github.com/maksimowiczm/FoodYou) - I shamelessly x2 borrowed inspiration from this project.
