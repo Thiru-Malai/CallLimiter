@@ -29,16 +29,16 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
-            android:name=".UI.About"
+            android:name=".About"
             android:exported="false" />
         <activity
-            android:name=".UI.Permissions"
+            android:name=".Permissions"
             android:exported="false" />
         <activity
-            android:name=".UI.Settings"
+            android:name=".Settings"
             android:exported="false" />
         <activity
-            android:name=".UI.OnboardingActivity"
+            android:name=".OnboardingActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -51,7 +51,7 @@
         </activity>
 
         <service
-            android:name=".Service.CallMonitorService"
+            android:name=".CallMonitorService"
             android:foregroundServiceType="phoneCall"
             android:permission="android.permission.FOREGROUND_SERVICE" />
 

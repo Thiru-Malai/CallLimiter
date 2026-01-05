@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.thirumalai.calllimiter.Data.PreferenceHelper;
+import com.thirumalai.calllimiter.PreferenceHelper;
 
 import org.json.JSONObject;
 

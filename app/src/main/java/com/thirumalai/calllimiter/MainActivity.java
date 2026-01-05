@@ -1,16 +1,13 @@
 package com.thirumalai.calllimiter;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.Insets;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -21,22 +18,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.provider.ContactsContract;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -49,16 +36,12 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.thirumalai.calllimiter.BottomSheets.TimerBottomSheet;
-import com.thirumalai.calllimiter.Data.PreferenceHelper;
-import com.thirumalai.calllimiter.Service.CallMonitorService;
-import com.thirumalai.calllimiter.UI.OnboardingActivity;
-import com.thirumalai.calllimiter.UI.Settings;
-import com.thirumalai.calllimiter.Utils.SystemBarHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button setLimit, selectFromContacts;
     private int selectedHour = -1, selectedMinute = -1;
-    private TextInputEditText phoneNumberField, contactNameField;
+    private TextInputEditText phoneNumberField;
     boolean isPhoneAvailable = false, isTimeAvailable = false;
     private static final int NOTIFICATION_PERMISSION_CODE = 1001;
     private static final int PICK_CONTACT_REQUEST = 1;
@@ -95,15 +78,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
-
-        View rootView = findViewById(android.R.id.content);
-        SystemBarHelper.setupStatusBarAppearance(getWindow(), getResources(), rootView);
+        setupStatusBarAppearance();
 
         Button timeLimitButton = findViewById(R.id.set_time_limit_button);
         setLimit = findViewById(R.id.set_limit_button);
         selectFromContacts = findViewById(R.id.select_contact_button);
         phoneNumberField = findViewById(R.id.phone_number_input);
-        contactNameField = findViewById(R.id.contact_name);
         settings = findViewById(R.id.settings_button);
         // Check for last updated date change
         checkAndSetInitialDate();
@@ -161,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String phoneNumber =  Objects.requireNonNull(phoneNumberField.getText()).toString().trim();
-                String contactName = Objects.requireNonNull(contactNameField.getText()).toString().trim();
                 if(phoneNumber.isEmpty() || selectedHour == -1 || selectedMinute == -1){
                     Toast.makeText(MainActivity.this, "Please make sure phone number and time limit is set.", Toast.LENGTH_SHORT).show();
                     return;
@@ -171,9 +150,6 @@ public class MainActivity extends AppCompatActivity {
                 // Save the phone number as the key and time limit as the value
                 JSONObject jsonObject = new JSONObject();
                 try{
-                    if(!contactName.isEmpty()) {
-                        jsonObject.put("name", contactName);
-                    }
                     jsonObject.put("limit", totalSeconds);
                     jsonObject.put("remaining_time", totalSeconds);
                     jsonObject.put("last_updated", getTodayDate());
@@ -186,10 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
                 isPhoneAvailable = false;
                 phoneNumberField.setText(null);
-                contactNameField.setText(null);
                 setLimit.setText(R.string.set_limit);
-
-                clearInputFocus();
 
                 // Resetting time
                 selectedHour = -1;
@@ -299,12 +272,8 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(phoneNumberData);
 
                     int remaining_time = jsonObject.getInt("remaining_time");
-                    String contact_name = "";
-                    if(jsonObject.has("name")){
-                        contact_name = jsonObject.getString("name");
-                    }
 
-                    createLayout(savedLimitsLayout, phoneNumber, remaining_time, contact_name);
+                    createLayout(savedLimitsLayout, phoneNumber, remaining_time);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -314,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void createLayout(LinearLayout savedLimitsLayout, String phoneNumber, int remaining_time, String contact_name){
+    private void createLayout(LinearLayout savedLimitsLayout, String phoneNumber, int remaining_time){
         int hours = remaining_time / 3600;
         int minutes = (remaining_time % 3600) / 60;
         int seconds = remaining_time % 60;
@@ -335,128 +304,25 @@ public class MainActivity extends AppCompatActivity {
         valueLayout.setOrientation(LinearLayout.VERTICAL);
         valueLayout.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 0.8F));
 
-        // Horizontal Linear Layout to add an edit button
-        LinearLayout header = new LinearLayout(this);
-        header.setOrientation(LinearLayout.HORIZONTAL);
-        header.setGravity(Gravity.CENTER_VERTICAL);
-
-        EditText identifier = new EditText(this);
-        if(!contact_name.isEmpty()){
-            identifier.setText(contact_name);
-        } else{
-            identifier.setText(phoneNumber);
-        }
-        identifier.setTextSize(20);
-        identifier.setTypeface(Typeface.DEFAULT_BOLD);
-        identifier.setTag("number");
-        identifier.setBackground(null);
-        identifier.setFocusable(false);
-        identifier.setPadding(0, 0, 0, 0);
-        identifier.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.8f));
-        identifier.setSingleLine(true);
-        identifier.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        identifier.setInputType(InputType.TYPE_CLASS_TEXT);
-
-        // Disable Touch Events in Non-Edit Mode to Handle Bottom Sheets
-        identifier.setFocusableInTouchMode(false);
-        int originalColor = identifier.getCurrentTextColor();
-        identifier.setEnabled(false);
-        identifier.setTextColor(originalColor);
-        identifier.setClickable(false);
-        identifier.setLongClickable(false);
+        TextView number = new TextView(this);
+        number.setText(phoneNumber);
+        number.setTextSize(20);
+        number.setTypeface(Typeface.DEFAULT_BOLD);
+        number.setTag("number");
 //        number.setId(View.generateViewId());
-
-        ContextThemeWrapper wrapper = new ContextThemeWrapper(this, R.style.Widget_App_Button_IconOnly);
-
-        MaterialButton iconButton = new MaterialButton(wrapper, null, R.style.Widget_App_Button_IconOnly);
-        iconButton.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.2f));
-        iconButton.setBackgroundColor(Color.TRANSPARENT);
-        iconButton.setIconResource(R.drawable.edit_24px);
-        iconButton.setText("");
-        iconButton.setStrokeWidth(0);
-
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true);
-        int iconColor = typedValue.data;
-        iconButton.setIconTint(ColorStateList.valueOf(iconColor));
-
-        iconButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean isCurrentlyEditing = iconButton.getTag() != null && (boolean) iconButton.getTag();
-
-                if(!isCurrentlyEditing){
-                    iconButton.setTag(true);
-                    iconButton.setIconResource(R.drawable.check_24px);
-
-                    enableEditing(identifier);
-                } else {
-                    iconButton.setTag(false);
-                    iconButton.setIconResource(R.drawable.edit_24px);
-
-                    String contactName = Objects.requireNonNull(identifier.getText()).toString().trim();
-                    if(contactName.isEmpty()){
-                       identifier.setText(phoneNumber);
-                    }
-                    String phoneNumberData = PreferenceHelper.getContact(phoneNumber);
-                    if(phoneNumberData != null){
-                        // Saving name
-                        try {
-                            JSONObject jsonObject = new JSONObject(phoneNumberData);
-                            jsonObject.put("name", contactName);
-                            PreferenceHelper.saveContact(phoneNumber, jsonObject.toString());
-
-                            updateSavedLimitsUI("Refresh");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    disableEditing(identifier);
-                }
-            }
-        });
-
-        identifier.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(i == EditorInfo.IME_ACTION_DONE){
-                    disableEditing(identifier);
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        identifier.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                boolean isCurrentlyEditing = iconButton.getTag() != null && (boolean) iconButton.getTag();
-                if (!hasFocus && isCurrentlyEditing) {
-                    iconButton.performClick();
-                }
-            }
-        });
-
-
-
-        header.addView(identifier);
-        header.addView(iconButton);
 
         TextView time = new TextView(this);
         time.setText(hours + " hrs " + minutes + " mins " + seconds + " seconds");
         time.setTextSize(16);
 
-        valueLayout.addView(header);
+        valueLayout.addView(number);
         valueLayout.addView(time);
 
         valueLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                boolean isCurrentlyEditing = iconButton.getTag() != null && (boolean) iconButton.getTag();
-                if (isCurrentlyEditing) {
-                    return true;
-                }
+                TextView numberView = view.findViewWithTag("number");
+                String listNumber = numberView.getText().toString();
                 TimerBottomSheet bottomSheet = new TimerBottomSheet(new TimerBottomSheet.OnTimeSelectedListener() {
                     @Override
                     public void onTimeSelected(int hours, int minutes) {
@@ -464,13 +330,13 @@ public class MainActivity extends AppCompatActivity {
                         selectedHour = hours;
                         selectedMinute = minutes;
 
-                        String phoneNumberData = PreferenceHelper.getContact(phoneNumber);
+                        String phoneNumberData = PreferenceHelper.getContact(listNumber);
 
                         if(phoneNumberData != null){
                             // Update remaining time
                             try {
                                 JSONObject jsonObject = updateLimit(phoneNumberData);
-                                PreferenceHelper.saveContact(phoneNumber, jsonObject.toString());
+                                PreferenceHelper.saveContact(listNumber, jsonObject.toString());
 
                                 updateSavedLimitsUI("Refresh");
 
@@ -515,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onTimerReset() {
                         isTimeAvailable = false;
                     }
-                }, phoneNumber, contact_name);
+                });
                 bottomSheet.show(getSupportFragmentManager(), "TimerBottomSheet");
                 return false;
             }
@@ -571,8 +437,35 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        View rootView = findViewById(android.R.id.content);
-        SystemBarHelper.setupStatusBarAppearance(getWindow(), getResources(), rootView);
+        setupStatusBarAppearance();
+    }
+
+    private void setupStatusBarAppearance() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            // Let app draw behind system bars
+            getWindow().setDecorFitsSystemWindows(false);
+
+            final View rootView = findViewById(android.R.id.content);
+
+            // Handle insets to avoid status bar overlap
+            rootView.setOnApplyWindowInsetsListener((v, insets) -> {
+                Insets systemBarsInsets = insets.getInsets(WindowInsets.Type.systemBars());
+                v.setPadding(0, systemBarsInsets.top, 0, 0); // Top padding only
+                return insets;
+            });
+
+            // Dynamically adjust status bar text/icons color based on theme
+            WindowInsetsController controller = getWindow().getInsetsController();
+            if (controller != null) {
+                boolean isDarkTheme = (getResources().getConfiguration().uiMode
+                        & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+
+                controller.setSystemBarsAppearance(
+                        isDarkTheme ? 0 : WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                );
+            }
+        }
     }
 
     private void checkAndSetInitialDate() {
@@ -621,7 +514,6 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     phoneNumberField.setText(numberWithoutCountryCode);
-                    contactNameField.setText(name);
                 }
             } catch (Exception e) {
                 if(e.toString().contains("Error type: INVALID_COUNTRY_CODE.")){
@@ -652,67 +544,5 @@ public class MainActivity extends AppCompatActivity {
             default:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
-    }
-
-    private void enableEditing(EditText editText) {
-        editText.setFocusableInTouchMode(true);
-        editText.setFocusable(true);
-        editText.setEnabled(true);
-        editText.setClickable(true);
-        editText.setLongClickable(true);
-        editText.setSelection(editText.getText().length());
-        editText.requestFocus();
-
-        editText.post(() -> {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if(imm != null){
-                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
-            }
-        });
-    }
-
-    private void disableEditing(EditText editText) {
-        editText.setFocusable(false);
-        editText.setFocusableInTouchMode(false);
-        int originalColor = editText.getCurrentTextColor();
-        editText.setEnabled(false);
-        editText.setTextColor(originalColor);
-        editText.setClickable(false);
-        editText.setLongClickable(false);
-
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
-    }
-
-    private void clearInputFocus(){
-        if(phoneNumberField != null){
-            phoneNumberField.clearFocus();
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if(imm != null){
-                imm.hideSoftInputFromWindow(phoneNumberField.getWindowToken(), 0);
-            }
-        }
-        if(contactNameField != null){
-            contactNameField.clearFocus();
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if(imm != null){
-                imm.hideSoftInputFromWindow(contactNameField.getWindowToken(), 0);
-            }
-        }
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event){
-        if(event.getAction() == MotionEvent.ACTION_DOWN){
-            View v = getCurrentFocus();
-            if(v instanceof TextInputEditText){
-                Rect outRect = new Rect();
-                v.getGlobalVisibleRect(outRect);
-                if(!outRect.contains((int)event.getRawX(), (int)event.getRawY())){
-                    clearInputFocus();
-                }
-            }
-        }
-        return super.dispatchTouchEvent(event);
     }
 }

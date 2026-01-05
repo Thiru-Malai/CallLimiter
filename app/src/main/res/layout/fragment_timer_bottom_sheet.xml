@@ -14,16 +14,6 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/phone_number_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="0000000000  John Doe"
-            android:textSize="18sp"
-            android:textAlignment="center"
-            android:layout_marginTop="10dp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

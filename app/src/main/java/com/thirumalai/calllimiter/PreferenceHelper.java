@@ -1,4 +1,4 @@
-package com.thirumalai.calllimiter.Data;
+package com.thirumalai.calllimiter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
