@@ -51,6 +51,7 @@ public class CallMonitorService extends Service {
     private int elapsedTime = 1; // Time in seconds
     private static CallMonitorService instance;
     private PendingIntent pendingIntent;
+    private boolean wasInCall = false;
 
     @Override
     public void onCreate() {
@@ -93,6 +94,7 @@ public class CallMonitorService extends Service {
                         System.out.println(numberWithoutCountryCode);
                     }
                     if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                        wasInCall = true;
                         elapsedTime = 1;
 
                         String phoneNumberData = PreferenceHelper.getContact(numberWithoutCountryCode);
@@ -128,44 +130,45 @@ public class CallMonitorService extends Service {
                             Log.d("callService", "number not present");
                         }
                     } else if (state == TelephonyManager.CALL_STATE_IDLE) {
-                        Log.d("CallMonitorService", "Call State Idle Triggered");
+                        if (wasInCall) {
+                            wasInCall = false;
+                            Log.d("CallMonitorService", "Call State Idle Triggered");
 
-                        String phoneNumberData = PreferenceHelper.getContact(numberWithoutCountryCode);
-                        if(phoneNumberData != null){
-                            Log.d("CallMonitorService", "Call ended. Stopping timer.");
+                            String phoneNumberData = PreferenceHelper.getContact(numberWithoutCountryCode);
+                            if (phoneNumberData != null) {
+                                Log.d("CallMonitorService", "Call ended. Stopping timer.");
 
-                            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                            if(vibrator != null && vibrator.hasVibrator()){
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    VibrationEffect vibrationEffect = VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE);
-                                    vibrator.vibrate(vibrationEffect);
+                                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                if (vibrator != null && vibrator.hasVibrator()) {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        VibrationEffect vibrationEffect = VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE);
+                                        vibrator.vibrate(vibrationEffect);
+                                    } else {
+                                        vibrator.vibrate(200);
+                                    }
                                 }
-                                else{
-                                    vibrator.vibrate(200);
+
+                                // Update remaining time
+
+                                try {
+                                    JSONObject jsonObject = new JSONObject(phoneNumberData);
+                                    int remainingTime = callTimeLimit / 1000 - elapsedTime;
+
+                                    if (remainingTime < 0) {
+                                        remainingTime = 0;
+                                    }
+
+                                    jsonObject.put("remaining_time", remainingTime);
+
+                                    PreferenceHelper.saveContact(numberWithoutCountryCode, jsonObject.toString());
+
+                                    if (isTimerRunning) {
+                                        stopCallTimer();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             }
-
-                            // Update remaining time
-
-                            try {
-                                JSONObject jsonObject = new JSONObject(phoneNumberData);
-                                int remainingTime =  callTimeLimit / 1000 - elapsedTime;
-
-                                if(remainingTime < 0){
-                                    remainingTime = 0;
-                                }
-
-                                jsonObject.put("remaining_time", remainingTime);
-
-                                PreferenceHelper.saveContact(numberWithoutCountryCode, jsonObject.toString());
-
-                                if(isTimerRunning){
-                                    stopCallTimer();
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
                         }
                     }
                 } catch (NumberParseException e) {
