@@ -169,7 +169,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Adds a 10-second buffer at the start of each call"
-                        android:textColor="@color/md_theme_tertiary"
+                        android:textColor="#B8B8B8"
                         android:textSize="12sp" />
                 </LinearLayout>
 
