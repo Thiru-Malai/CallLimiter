@@ -114,12 +114,27 @@
                 android:textSize="20sp"
                 android:padding="10dp"/>
 
-            <com.google.android.material.textview.MaterialTextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/emergency_buffer_time"
-                android:textSize="16sp"
-                android:padding="8dp"/>
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/emergency_buffer_time"
+                    android:textSize="16sp"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/automatically_adds_the_chosen_buffer_when_the_remaining_limit_is_under_10_seconds"
+                    android:textColor="#B8B8B8"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
