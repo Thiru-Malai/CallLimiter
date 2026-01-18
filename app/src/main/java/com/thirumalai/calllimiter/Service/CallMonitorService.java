@@ -119,9 +119,12 @@ public class CallMonitorService extends Service {
                                 remaining_time = bufferTime;
                             }
 
-                            // Adding +10 secs - timer starts once the call is made and not when the call is attended
-                            callTimeLimit = remaining_time * 1000 + 10000;
-                            System.out.println(callTimeLimit);
+                            callTimeLimit = remaining_time * 1000;
+                            boolean isCallStartBufferEnabled = PreferenceHelper.getCallStartBufferValue();
+                            if(isCallStartBufferEnabled){
+                                // Adding +10 secs - timer starts once the call is made and not when the call is attended based on user preference
+                                callTimeLimit += 10000;
+                            }
                             startCallTimer();
 
                             Log.d("CallMonitorService", "Call started. Starting timer.");

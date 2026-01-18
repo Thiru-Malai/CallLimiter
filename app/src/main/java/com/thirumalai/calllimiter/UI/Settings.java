@@ -33,8 +33,8 @@ public class Settings extends AppCompatActivity {
     private TextView selectedThemeText, bufferValueText, timeLimit;
     private ImageView backBtn;
     private SeekBar bufferBar;
-    private MaterialSwitch switchBtn;
-    private boolean isChecked = false;
+    private MaterialSwitch switchBtn, callStartBufferSwitchBtn;
+    private boolean isChecked = false, isCallStartBufferEnabled = true;
     private final int[] BUFFER_VALUES = {10, 20, 30, 60, 120, 180, 240, 300};
 
     @Override
@@ -59,8 +59,10 @@ public class Settings extends AppCompatActivity {
         switchBtn = findViewById(R.id.limit_all_numbers_switch);
         timeLimitForAllNumbers = findViewById(R.id.time_limit_all_numbers_layout);
         timeLimit = findViewById(R.id.time_limit_all_numbers_text);
+        callStartBufferSwitchBtn = findViewById(R.id.call_start_buffer_time);
 
         isChecked = PreferenceHelper.getLimitForAllNumbersEnabled();
+        isCallStartBufferEnabled = PreferenceHelper.getCallStartBufferValue();
         int timeLimit1 = PreferenceHelper.getTimeLimitForAllNumbers();
 
         int hours = timeLimit1 / 3600;
@@ -77,6 +79,8 @@ public class Settings extends AppCompatActivity {
             minutesStr = Integer.toString(minutes);
         }
         timeLimit.setText(hoursStr + ":" + minutesStr + ":" + "00");
+
+        callStartBufferSwitchBtn.setChecked(isCallStartBufferEnabled);
 
         switchBtn.setChecked(isChecked);
         if(isChecked){
@@ -156,6 +160,8 @@ public class Settings extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        callStartBufferSwitchBtn.setOnCheckedChangeListener((compoundButton, b) -> PreferenceHelper.updateCallStartBufferValue(b));
 
         switchBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
