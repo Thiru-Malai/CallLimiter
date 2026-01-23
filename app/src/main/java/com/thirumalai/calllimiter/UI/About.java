@@ -8,17 +8,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.google.android.material.chip.Chip;
 import com.thirumalai.calllimiter.R;
 import com.thirumalai.calllimiter.Utils.SystemBarHelper;
+import com.thirumalai.calllimiter.Service.CommonService;
 
 public class About extends AppCompatActivity {
     TextView version;
-    ImageView back_btn;
-    CardView sponsor, sourceCode, changeLog, termsAndConditions, privacyPolicy;
+    ImageView back_btn, buyMeACoffeeImage, liberaPayImage, kofiImage;
+    Chip bitcoinChip;
+    CardView sourceCode, changeLog, termsAndConditions, privacyPolicy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +35,15 @@ public class About extends AppCompatActivity {
 
 
         version = findViewById(R.id.version);
-        sponsor = findViewById(R.id.sponsor);
         sourceCode = findViewById(R.id.source_code);
         termsAndConditions = findViewById(R.id.terms_conditions_about);
         privacyPolicy = findViewById(R.id.privacy_policy_about);
         changeLog = findViewById(R.id.change_log);
         back_btn = findViewById(R.id.back_btn_about);
+        buyMeACoffeeImage = findViewById(R.id.buymeacoffee);
+        liberaPayImage = findViewById(R.id.liberapay);
+        kofiImage = findViewById(R.id.kofi);
+        bitcoinChip = findViewById(R.id.bitcoin_chip);
 
         PackageInfo packageInfo;
         try {
@@ -46,10 +53,6 @@ public class About extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException(e);
         }
-
-        sponsor.setOnClickListener(view -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.buymeacoffee.com/thirumalaikg"));
-            startActivity(intent);            });
 
         sourceCode.setOnClickListener(view -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Thiru-Malai/CallLimiter"));
@@ -77,5 +80,25 @@ public class About extends AppCompatActivity {
             startActivity(intent);
         });
 
+        buyMeACoffeeImage.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.buymeacoffee.com/thirumalaikg"));
+            startActivity(intent);
+        });
+
+        liberaPayImage.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://liberapay.com/thirumalaikg"));
+            startActivity(intent);
+        });
+
+        kofiImage.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://ko-fi.com/thirumalaikg"));
+            startActivity(intent);
+        });
+
+        bitcoinChip.setOnClickListener(view -> {
+            CommonService service = new CommonService();
+            service.copyToClipboard(this, getResources().getString(R.string.bitcoin_address));
+            Toast.makeText(this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+        });
     }
 }
