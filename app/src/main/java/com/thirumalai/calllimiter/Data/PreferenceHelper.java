@@ -17,6 +17,7 @@ public class PreferenceHelper {
     private static final String SETTINGS_PREF = "settings_store";
     private static final String THEME_KEY = "theme_key";
     private static final String BUFFER_TIME = "buffer_key";
+    private static final String CALL_START_BUFFER_KEY = "call_start_buffer_key";
     private static final String TERMS_CONDITIONS = "terms_conditions_key";
     private static final String LIMIT_FOR_ALL_NUMBERS = "limit_for_all_numbers_key";
     private static final String TIME_LIMIT_FOR_ALL_NUMBERS = "time_limit_for_all_numbers_key";
@@ -96,6 +97,14 @@ public class PreferenceHelper {
 
     public static Integer getBufferTime(){
         return settingsStore.getInt(BUFFER_TIME, 10);
+    }
+
+    public static void updateCallStartBufferValue(boolean enabled){
+        settingsEditor.putBoolean(CALL_START_BUFFER_KEY, enabled).apply();
+    }
+
+    public static boolean getCallStartBufferValue(){
+        return settingsStore.getBoolean(CALL_START_BUFFER_KEY, true);
     }
 
     public static void readTermsAndConditions(boolean read){

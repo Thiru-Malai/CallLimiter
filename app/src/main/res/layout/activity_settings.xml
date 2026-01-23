@@ -114,12 +114,27 @@
                 android:textSize="20sp"
                 android:padding="10dp"/>
 
-            <com.google.android.material.textview.MaterialTextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/emergency_buffer_time"
-                android:textSize="16sp"
-                android:padding="8dp"/>
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/emergency_buffer_time"
+                    android:textSize="16sp"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/automatically_adds_the_chosen_buffer_when_the_remaining_limit_is_under_10_seconds"
+                    android:textColor="#B8B8B8"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -144,6 +159,43 @@
                     android:layout_height="match_parent"
                     android:paddingVertical="8dp"
                     android:layout_weight="0.95"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="0.8"
+                    android:padding="8dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Call Start Buffer Time"
+                        android:textSize="16sp"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Adds a 10-second buffer at the start of each call"
+                        android:textColor="#B8B8B8"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/call_start_buffer_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_weight="0.2"
+                    android:padding="8dp"/>
 
             </LinearLayout>
 
