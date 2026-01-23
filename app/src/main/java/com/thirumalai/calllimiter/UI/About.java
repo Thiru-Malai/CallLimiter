@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -97,6 +98,7 @@ public class About extends AppCompatActivity {
         bitcoinChip.setOnClickListener(view -> {
             CommonService service = new CommonService();
             service.copyToClipboard(this, getResources().getString(R.string.bitcoin_address));
+            Toast.makeText(this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
         });
     }
 }
