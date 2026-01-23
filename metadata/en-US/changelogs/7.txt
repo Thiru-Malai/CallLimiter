@@ -3,3 +3,6 @@
 
 ## Improvements
 - Added description for Emergency Buffer Time
+
+## Support
+- Added new donation methods
