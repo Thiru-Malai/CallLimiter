@@ -1,0 +1,13 @@
+## Important Notice
+- Due to a change in the app’s signature, updating from previous versions is not possible.
+- Please uninstall and reinstall the app to continue using it without issues.
+- For more information, please check out - https://github.com/Thiru-Malai/CallLimiter/discussions/51
+
+## New Features
+- Call Start Buffer Time: Added an option to enable or disable the automatic 10-second buffer added at the start of each call
+
+## Improvements
+- Added description for Emergency Buffer Time
+
+## Support
+- Added new donation methods
