@@ -1,0 +1,8 @@
+## New Features
+- Call Start Buffer Time: Added an option to enable or disable the automatic 10-second buffer added at the start of each call
+
+## Improvements
+- Added description for Emergency Buffer Time
+
+## Support
+- Added new donation methods
