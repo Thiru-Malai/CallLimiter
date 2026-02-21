@@ -21,6 +21,7 @@ public class PreferenceHelper {
     private static final String TERMS_CONDITIONS = "terms_conditions_key";
     private static final String LIMIT_FOR_ALL_NUMBERS = "limit_for_all_numbers_key";
     private static final String TIME_LIMIT_FOR_ALL_NUMBERS = "time_limit_for_all_numbers_key";
+    private static final String RESET_TIME_LIMIT_EACH_CALL = "reset_time_limit_each_call";
     private static SharedPreferences contactDataStore, lastUpdatedStore, firstTimeStore, settingsStore, readTermsAndConditionsStore;
     private static SharedPreferences.Editor contactDataEditor, lastUpdatedEditor, firstTimeEditor, settingsEditor, readTermsAndConditionsEditor;
 
@@ -129,6 +130,14 @@ public class PreferenceHelper {
 
     public static int getTimeLimitForAllNumbers(){
         return settingsStore.getInt(TIME_LIMIT_FOR_ALL_NUMBERS, 0);
+    }
+
+    public static void updateLimitForEachCallValue(boolean enabled){
+        settingsEditor.putBoolean(RESET_TIME_LIMIT_EACH_CALL, enabled).apply();
+    }
+
+    public static boolean getLimitForEachCallValue(){
+        return settingsStore.getBoolean(RESET_TIME_LIMIT_EACH_CALL, false);
     }
 
 //    public static Map<String, ?> setAllContactLimits(Context context) {
