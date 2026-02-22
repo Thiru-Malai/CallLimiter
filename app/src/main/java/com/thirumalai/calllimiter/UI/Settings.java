@@ -26,15 +26,18 @@ import com.thirumalai.calllimiter.Data.PreferenceHelper;
 import com.thirumalai.calllimiter.R;
 import com.thirumalai.calllimiter.Utils.SystemBarHelper;
 
+import org.json.JSONObject;
+
 import java.util.Map;
+import java.util.Objects;
 
 public class Settings extends AppCompatActivity {
     private LinearLayout layoutTheme, githubIssues, permissions, about, timeLimitForAllNumbers;
     private TextView selectedThemeText, bufferValueText, timeLimit;
     private ImageView backBtn;
     private SeekBar bufferBar;
-    private MaterialSwitch switchBtn, callStartBufferSwitchBtn;
-    private boolean isChecked = false, isCallStartBufferEnabled = true;
+    private MaterialSwitch switchBtn, callStartBufferSwitchBtn, limitResetForEachCallSwitchBtn;
+    private boolean isChecked = false, isCallStartBufferEnabled = true, islimitRestForEachCallEnabled = false;
     private final int[] BUFFER_VALUES = {10, 20, 30, 60, 120, 180, 240, 300};
 
     @Override
@@ -60,9 +63,11 @@ public class Settings extends AppCompatActivity {
         timeLimitForAllNumbers = findViewById(R.id.time_limit_all_numbers_layout);
         timeLimit = findViewById(R.id.time_limit_all_numbers_text);
         callStartBufferSwitchBtn = findViewById(R.id.call_start_buffer_time);
+        limitResetForEachCallSwitchBtn = findViewById(R.id.limit_reset_each_call);
 
         isChecked = PreferenceHelper.getLimitForAllNumbersEnabled();
         isCallStartBufferEnabled = PreferenceHelper.getCallStartBufferValue();
+        islimitRestForEachCallEnabled = PreferenceHelper.getLimitForEachCallValue();
         int timeLimit1 = PreferenceHelper.getTimeLimitForAllNumbers();
 
         int hours = timeLimit1 / 3600;
@@ -101,6 +106,9 @@ public class Settings extends AppCompatActivity {
         selectedThemeText.setText(PreferenceHelper.getTheme());
         bufferBar.setProgress(index);
         bufferValueText.setText(formatBufferTime(bufferTime));
+
+        limitResetForEachCallSwitchBtn.setChecked(islimitRestForEachCallEnabled);
+
         layoutTheme.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,6 +223,25 @@ public class Settings extends AppCompatActivity {
                     public void onTimerReset() { }
                 });
                 bottomSheet.show(getSupportFragmentManager(), "TimerBottomSheet");
+        });
+
+        limitResetForEachCallSwitchBtn.setOnCheckedChangeListener((compoundButton, b) -> {
+            PreferenceHelper.updateLimitForEachCallValue(b);
+            if(b){
+                Map<String, ?> all = PreferenceHelper.getAllContact();
+                for (String phoneNumber : all.keySet()) {
+                    try{
+                        JSONObject jsonObject = new JSONObject((String) Objects.requireNonNull(all.get(phoneNumber)));
+
+                        int limit = jsonObject.getInt("limit");
+                        jsonObject.put("remaining_time", limit);
+
+                        PreferenceHelper.saveContact(phoneNumber, jsonObject.toString());
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
         });
     }
 

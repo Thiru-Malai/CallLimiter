@@ -65,4 +65,5 @@
     <string name="automatically_adds_the_chosen_buffer_when_the_remaining_limit_is_under_10_seconds">Automatically adds the chosen buffer when the remaining limit is under 10 seconds</string>
     <string name="bitcoin">Bitcoin</string>
     <string name="bitcoin_address">bc1q26ag0k77ez63pd0zu492vj7dncfqmknkk7sjfh</string>
+    <string name="reset_limit_on_each_call">Reset limit on each call</string>
 </resources>

@@ -47,7 +47,7 @@ public class CallMonitorService extends Service {
     private int callTimeLimit = 10 * 1000; // 10 seconds
     private PhoneStateListener phoneStateListener;
     private PhoneNumberUtil phoneNumberUtil;
-    private boolean isTimerRunning = false;
+    private boolean isTimerRunning = false, islimitRestForEachCallEnabled = false;
     private int elapsedTime = 1; // Time in seconds
     private static CallMonitorService instance;
     private PendingIntent pendingIntent;
@@ -141,6 +141,10 @@ public class CallMonitorService extends Service {
                             if (phoneNumberData != null) {
                                 Log.d("CallMonitorService", "Call ended. Stopping timer.");
 
+                                if (isTimerRunning) {
+                                    stopCallTimer();
+                                }
+
                                 Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                                 if (vibrator != null && vibrator.hasVibrator()) {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -155,19 +159,20 @@ public class CallMonitorService extends Service {
 
                                 try {
                                     JSONObject jsonObject = new JSONObject(phoneNumberData);
-                                    int remainingTime = callTimeLimit / 1000 - elapsedTime;
 
-                                    if (remainingTime < 0) {
-                                        remainingTime = 0;
+                                    islimitRestForEachCallEnabled = PreferenceHelper.getLimitForEachCallValue();
+
+                                    if(!islimitRestForEachCallEnabled){
+                                        int remainingTime = callTimeLimit / 1000 - elapsedTime;
+
+                                        if (remainingTime < 0) {
+                                            remainingTime = 0;
+                                        }
+
+                                        jsonObject.put("remaining_time", remainingTime);
                                     }
-
-                                    jsonObject.put("remaining_time", remainingTime);
 
                                     PreferenceHelper.saveContact(numberWithoutCountryCode, jsonObject.toString());
-
-                                    if (isTimerRunning) {
-                                        stopCallTimer();
-                                    }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -186,9 +191,10 @@ public class CallMonitorService extends Service {
     }
 
     private void startCallTimer() {
-        if (!isTimerRunning) {
-            isTimerRunning = true;
+        if (isTimerRunning) {
+            return;
         }
+        isTimerRunning = true;
         endCallRunnable = () -> {
             endCall();
         };
