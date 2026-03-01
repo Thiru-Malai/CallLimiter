@@ -247,6 +247,28 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reset_limit_on_each_call"
+                    android:textSize="16sp"
+                    android:padding="8dp"
+                    android:layout_weight="0.8"/>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/limit_reset_each_call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:padding="8dp"/>
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

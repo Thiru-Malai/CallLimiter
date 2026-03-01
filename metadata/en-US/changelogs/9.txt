@@ -1,0 +1,5 @@
+## New Features
+- Added functionality to reset limit after each call - Limit for each call
+
+## Improvements
+- Fixed incorrect notification timer
