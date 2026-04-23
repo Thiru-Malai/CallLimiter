@@ -1,0 +1,2 @@
+## Improvements
+- App now opens when you tap the ‘Call Monitor Active’ notification
