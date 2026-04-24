@@ -3,17 +3,34 @@
 Call Limiter is an Android application designed to help users set a time limit for phone calls to specific contacts. This app ensures calls do not exceed the defined duration, making it easier to manage call times effectively.
 
 <div align="center">
-  <a href="https://f-droid.org/packages/com.thirumalai.calllimiter">
-    <img src="https://f-droid.org/badge/get-it-on.png"
+
+[<img src="https://f-droid.org/badge/get-it-on.png"
     alt="Get it on F-Droid"
-    height="80">
- </a>
-  
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/Thiru-Malai/CallLimiter/total?style=for-the-badge)
-![F-Droid Version](https://img.shields.io/f-droid/v/com.thirumalai.calllimiter?style=for-the-badge)
-![Static Badge](https://img.shields.io/badge/Buy_me_a_coffee-Support-brightgreen?style=for-the-badge&logo=buymeacoffee&logoColor=%23ffffff&link=https%3A%2F%2Fbuymeacoffee.com%2Fthirumalaikg)
+    height="80">](https://f-droid.org/packages/com.thirumalai.calllimiter)
+[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroidButtonGreyBorder_nofont.png" 
+    height="80" 
+    alt="Get it at IzzyOnDroid">](https://apt.izzysoft.de/packages/com.thirumalai.calllimiter)
+[<img src="https://s1.ax1x.com/2023/01/12/pSu1a36.png" alt="Download from GitHub" height="75">](https://github.com/Thiru-Malai/CallLimiter/releases)
 
 </div>
+
+
+<div align="center">
+
+![F-Droid Version](https://img.shields.io/f-droid/v/com.thirumalai.calllimiter?style=for-the-badge&color=blue)
+![IzzyOnDroid](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.thirumalai.calllimiter&label=IzzyOnDroid&style=for-the-badge)
+![GitHub Release](https://img.shields.io/github/v/release/Thiru-Malai/Calllimiter?style=for-the-badge&label=GITHUB&color=blue)
+
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/Thiru-Malai/CallLimiter/total?style=for-the-badge&label=GITHUB%20DOWNLOADS&color=green)
+[![IzzyOnDroid Monthly Downloads](https://img.shields.io/badge/dynamic/json?url=https://dlstats.izzyondroid.org/iod-stats-collector/stats/basic/monthly/rolling.json&query=$.['com.thirumalai.calllimiter']&label=IzzyOnDroid%20monthly%20downloads&style=for-the-badge&color=green)](https://apt.izzysoft.de/packages/com.thirumalai.calllimiter)
+[![IzzyOnDroid Yearly Downloads](https://img.shields.io/badge/dynamic/json?url=https://dlstats.izzyondroid.org/iod-stats-collector/stats/basic/yearly/rolling.json&query=$.['com.thirumalai.calllimiter']&label=IzzyOnDroid%20yearly%20downloads&style=for-the-badge&color=green)](https://apt.izzysoft.de/packages/com.thirumalai.calllimiter)
+
+<a href="https://buymeacoffee.com/thirumalaikg">
+    <img width="218" height="61" alt="buymeacoffee" src="https://github.com/user-attachments/assets/6149df1a-9555-4293-a8e5-1448e013201b" />
+</a>
+</div>
+
+<br>
 
 <div align="center">
     <img src="./metadata/en-US/images/featureGraphic.png" alt="Feature Graphic" />
