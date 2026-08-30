@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -49,6 +51,7 @@ public class CallMonitorService extends Service {
     private PhoneStateListener phoneStateListener;
     private PhoneNumberUtil phoneNumberUtil;
     private boolean isTimerRunning = false, islimitRestForEachCallEnabled = false;
+    private boolean hasTriggeredWarning = false;
     private int elapsedTime = 1; // Time in seconds
     private static CallMonitorService instance;
     private PendingIntent pendingIntent;
@@ -196,6 +199,7 @@ public class CallMonitorService extends Service {
             return;
         }
         isTimerRunning = true;
+        hasTriggeredWarning = false;
         endCallRunnable = () -> {
             endCall();
         };
@@ -207,6 +211,7 @@ public class CallMonitorService extends Service {
         if (isTimerRunning) {
             isTimerRunning = false;
         }
+        hasTriggeredWarning = false;
         if (endCallRunnable != null) {
             handler.removeCallbacks(endCallRunnable);
             handler.removeCallbacks(updateRunnable); // Stop updating notification
@@ -223,11 +228,47 @@ public class CallMonitorService extends Service {
         public void run() {
             if (isTimerRunning) {
                 elapsedTime++;
+
+                int remainingSeconds = (callTimeLimit / 1000) - elapsedTime;
+                boolean isWarningReminderEnabled = PreferenceHelper.getWarningReminderEnabled();
+                int warningReminderTime = PreferenceHelper.getWarningReminderTime();
+
+                if (isWarningReminderEnabled && remainingSeconds == warningReminderTime && !hasTriggeredWarning) {
+                    hasTriggeredWarning = true;
+                    triggerWarningAlert();
+                }
+
                 updateTimerNotification();
                 handler.postDelayed(this, 1000); // Repeat every second
             }
         }
     };
+
+    private void triggerWarningAlert() {
+        try {
+            ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_VOICE_CALL, 80);
+            toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP2, 250);
+            handler.postDelayed(toneGenerator::release, 500);
+        } catch (Exception e) {
+            Log.e("CallMonitorService", "Error playing warning tone: " + e.getMessage());
+        }
+
+        try {
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibrator != null && vibrator.hasVibrator()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    long[] timings = {0, 150, 100, 150};
+                    VibrationEffect vibrationEffect = VibrationEffect.createWaveform(timings, -1);
+                    vibrator.vibrate(vibrationEffect);
+                } else {
+                    long[] pattern = {0, 150, 100, 150};
+                    vibrator.vibrate(pattern, -1);
+                }
+            }
+        } catch (Exception e) {
+            Log.e("CallMonitorService", "Error triggering warning vibration: " + e.getMessage());
+        }
+    }
 
     private void endCall() {
         try {
