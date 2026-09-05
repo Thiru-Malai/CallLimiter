@@ -41,6 +41,8 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CallMonitorService extends Service {
     private static final String CHANNEL_ID = "CallMonitorChannel";
@@ -53,6 +55,7 @@ public class CallMonitorService extends Service {
     private boolean isTimerRunning = false, islimitRestForEachCallEnabled = false;
     private boolean hasTriggeredWarning = false;
     private int elapsedTime = 1; // Time in seconds
+    private final ExecutorService alertExecutor = Executors.newSingleThreadExecutor();
     private static CallMonitorService instance;
     private PendingIntent pendingIntent;
     private boolean wasInCall = false;
@@ -195,11 +198,11 @@ public class CallMonitorService extends Service {
     }
 
     private void startCallTimer() {
+        hasTriggeredWarning = false;
         if (isTimerRunning) {
             return;
         }
         isTimerRunning = true;
-        hasTriggeredWarning = false;
         endCallRunnable = () -> {
             endCall();
         };
@@ -233,7 +236,7 @@ public class CallMonitorService extends Service {
                 boolean isWarningReminderEnabled = PreferenceHelper.getWarningReminderEnabled();
                 int warningReminderTime = PreferenceHelper.getWarningReminderTime();
 
-                if (isWarningReminderEnabled && remainingSeconds == warningReminderTime && !hasTriggeredWarning) {
+                if (isWarningReminderEnabled && remainingSeconds <= warningReminderTime && !hasTriggeredWarning) {
                     hasTriggeredWarning = true;
                     triggerWarningAlert();
                 }
@@ -245,29 +248,40 @@ public class CallMonitorService extends Service {
     };
 
     private void triggerWarningAlert() {
-        try {
-            ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_VOICE_CALL, 80);
-            toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP2, 250);
-            handler.postDelayed(toneGenerator::release, 500);
-        } catch (Exception e) {
-            Log.e("CallMonitorService", "Error playing warning tone: " + e.getMessage());
-        }
-
-        try {
-            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            if (vibrator != null && vibrator.hasVibrator()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    long[] timings = {0, 150, 100, 150};
-                    VibrationEffect vibrationEffect = VibrationEffect.createWaveform(timings, -1);
-                    vibrator.vibrate(vibrationEffect);
-                } else {
-                    long[] pattern = {0, 150, 100, 150};
-                    vibrator.vibrate(pattern, -1);
+        alertExecutor.execute(() -> {
+            ToneGenerator toneGenerator = null;
+            try {
+                toneGenerator = new ToneGenerator(AudioManager.STREAM_VOICE_CALL, 80);
+                if (toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP2, 250)) {
+                    Thread.sleep(300);
+                }
+            } catch (Exception e) {
+                Log.e("CallMonitorService", "Error playing warning tone: " + e.getMessage());
+            } finally {
+                if (toneGenerator != null) {
+                    try {
+                        toneGenerator.release();
+                    } catch (Exception e) {
+                        Log.e("CallMonitorService", "Error releasing ToneGenerator: " + e.getMessage());
+                    }
                 }
             }
-        } catch (Exception e) {
-            Log.e("CallMonitorService", "Error triggering warning vibration: " + e.getMessage());
-        }
+
+            try {
+                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                if (vibrator != null && vibrator.hasVibrator()) {
+                    long[] timings = {0, 150, 100, 150};
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        VibrationEffect vibrationEffect = VibrationEffect.createWaveform(timings, -1);
+                        vibrator.vibrate(vibrationEffect);
+                    } else {
+                        vibrator.vibrate(timings, -1);
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("CallMonitorService", "Error triggering warning vibration: " + e.getMessage());
+            }
+        });
     }
 
     private void endCall() {
@@ -367,6 +381,7 @@ public class CallMonitorService extends Service {
     public void onDestroy() {
         super.onDestroy();
         instance = null;
+        alertExecutor.shutdown();
 
         if (telephonyManager != null && phoneStateListener != null) {
             telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
