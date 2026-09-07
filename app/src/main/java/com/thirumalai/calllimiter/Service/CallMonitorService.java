@@ -30,6 +30,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import com.thirumalai.calllimiter.BroadcastReceivers.CancelTimerReceiver;
 import com.thirumalai.calllimiter.Data.PreferenceHelper;
+import com.thirumalai.calllimiter.MainActivity;
 import com.thirumalai.calllimiter.R;
 
 import org.json.JSONException;
@@ -267,11 +268,17 @@ public class CallMonitorService extends Service {
     }
 
     private Notification getNotification() {
+        Intent appOpenIntent = new Intent(this, MainActivity.class);
+        appOpenIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent intent = PendingIntent.getActivity(this, 0, appOpenIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Call Monitor Active")
                 .setContentText("Limiting call duration")
                 .setSmallIcon(R.drawable.logo___notification)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_v2))
+                .setContentIntent(intent)
                 .build();
     }
 
