@@ -66,4 +66,8 @@
     <string name="bitcoin">Bitcoin</string>
     <string name="bitcoin_address">bc1q26ag0k77ez63pd0zu492vj7dncfqmknkk7sjfh</string>
     <string name="reset_limit_on_each_call">Reset limit on each call</string>
+    <string name="call_limit_warning_reminder">Call Limit Warning Reminder</string>
+    <string name="call_limit_warning_reminder_desc">Plays a tone and vibrates before the call limit is reached</string>
+    <string name="reminder_time">Reminder Time</string>
+    <string name="_15_s">15 s</string>
 </resources>
