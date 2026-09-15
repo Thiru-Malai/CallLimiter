@@ -32,13 +32,14 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Settings extends AppCompatActivity {
-    private LinearLayout layoutTheme, githubIssues, permissions, about, timeLimitForAllNumbers;
-    private TextView selectedThemeText, bufferValueText, timeLimit;
+    private LinearLayout layoutTheme, githubIssues, permissions, about, timeLimitForAllNumbers, warningReminderTimeLayout;
+    private TextView selectedThemeText, bufferValueText, timeLimit, warningReminderTimeText;
     private ImageView backBtn;
-    private SeekBar bufferBar;
-    private MaterialSwitch switchBtn, callStartBufferSwitchBtn, limitResetForEachCallSwitchBtn;
-    private boolean isChecked = false, isCallStartBufferEnabled = true, islimitRestForEachCallEnabled = false;
+    private SeekBar bufferBar, warningReminderBar;
+    private MaterialSwitch switchBtn, callStartBufferSwitchBtn, limitResetForEachCallSwitchBtn, warningReminderSwitchBtn;
+    private boolean isChecked = false, isCallStartBufferEnabled = true, islimitRestForEachCallEnabled = false, isWarningReminderEnabled = true;
     private final int[] BUFFER_VALUES = {10, 20, 30, 60, 120, 180, 240, 300};
+    private final int[] WARNING_REMINDER_VALUES = {5, 10, 15, 20, 30, 45, 60, 120};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +65,16 @@ public class Settings extends AppCompatActivity {
         timeLimit = findViewById(R.id.time_limit_all_numbers_text);
         callStartBufferSwitchBtn = findViewById(R.id.call_start_buffer_time);
         limitResetForEachCallSwitchBtn = findViewById(R.id.limit_reset_each_call);
+        warningReminderSwitchBtn = findViewById(R.id.warning_reminder_switch);
+        warningReminderTimeLayout = findViewById(R.id.warning_reminder_time_layout);
+        warningReminderTimeText = findViewById(R.id.warning_reminder_time_text);
+        warningReminderBar = findViewById(R.id.warning_reminder_time_seek_bar);
 
         isChecked = PreferenceHelper.getLimitForAllNumbersEnabled();
         isCallStartBufferEnabled = PreferenceHelper.getCallStartBufferValue();
         islimitRestForEachCallEnabled = PreferenceHelper.getLimitForEachCallValue();
+        isWarningReminderEnabled = PreferenceHelper.getWarningReminderEnabled();
+        int warningReminderTime = PreferenceHelper.getWarningReminderTime();
         int timeLimit1 = PreferenceHelper.getTimeLimitForAllNumbers();
 
         int hours = timeLimit1 / 3600;
@@ -241,6 +248,44 @@ public class Settings extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+            }
+        });
+
+        warningReminderSwitchBtn.setChecked(isWarningReminderEnabled);
+        warningReminderTimeLayout.setVisibility(isWarningReminderEnabled ? View.VISIBLE : View.GONE);
+
+        warningReminderBar.setMax(WARNING_REMINDER_VALUES.length - 1);
+        int reminderIndex = 2;
+        for(int i = 0; i < WARNING_REMINDER_VALUES.length; i++){
+            if(WARNING_REMINDER_VALUES[i] == warningReminderTime){
+                reminderIndex = i;
+                break;
+            }
+        }
+        warningReminderBar.setProgress(reminderIndex);
+        warningReminderTimeText.setText(formatBufferTime(warningReminderTime));
+
+        warningReminderSwitchBtn.setOnCheckedChangeListener((compoundButton, enabled) -> {
+            PreferenceHelper.updateWarningReminderEnabled(enabled);
+            warningReminderTimeLayout.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        });
+
+        warningReminderBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                int selectedValue = WARNING_REMINDER_VALUES[progress];
+                warningReminderTimeText.setText(formatBufferTime(selectedValue));
+                PreferenceHelper.updateWarningReminderTime(selectedValue);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
     }
