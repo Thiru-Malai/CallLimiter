@@ -10,6 +10,7 @@
     <li><b>Persistent Storage:</b> Your limits remain saved until you decide to change or delete them.</li>
     <li><b>Flexible Editing:</b> Update or remove call limits anytime with ease.</li>
     <li><b>Emergency Buffer:</b> Add a few extra seconds for urgent or unexpected needs.</li>
+    <li><b>Call Limit Warning Reminder:</b> Get an in-call audio alert (supervisor tone) and haptic vibration when your remaining call time reaches your chosen threshold, with customizable reminder time (5s – 120s).</li>
     <li><b>Modern Theming:</b> Supports both light and dark modes, adapting to your system theme.</li>
     <li><b>Privacy-Focused:</b> Works entirely offline — no internet, no tracking, no data sharing.</li>
 </ul>
