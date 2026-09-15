@@ -22,6 +22,8 @@ public class PreferenceHelper {
     private static final String LIMIT_FOR_ALL_NUMBERS = "limit_for_all_numbers_key";
     private static final String TIME_LIMIT_FOR_ALL_NUMBERS = "time_limit_for_all_numbers_key";
     private static final String RESET_TIME_LIMIT_EACH_CALL = "reset_time_limit_each_call";
+    private static final String WARNING_REMINDER_KEY = "warning_reminder_key";
+    private static final String WARNING_REMINDER_TIME_KEY = "warning_reminder_time_key";
     private static SharedPreferences contactDataStore, lastUpdatedStore, firstTimeStore, settingsStore, readTermsAndConditionsStore;
     private static SharedPreferences.Editor contactDataEditor, lastUpdatedEditor, firstTimeEditor, settingsEditor, readTermsAndConditionsEditor;
 
@@ -138,6 +140,22 @@ public class PreferenceHelper {
 
     public static boolean getLimitForEachCallValue(){
         return settingsStore.getBoolean(RESET_TIME_LIMIT_EACH_CALL, false);
+    }
+
+    public static void updateWarningReminderEnabled(boolean enabled){
+        settingsEditor.putBoolean(WARNING_REMINDER_KEY, enabled).apply();
+    }
+
+    public static boolean getWarningReminderEnabled(){
+        return settingsStore.getBoolean(WARNING_REMINDER_KEY, true);
+    }
+
+    public static void updateWarningReminderTime(int time){
+        settingsEditor.putInt(WARNING_REMINDER_TIME_KEY, time).apply();
+    }
+
+    public static int getWarningReminderTime(){
+        return settingsStore.getInt(WARNING_REMINDER_TIME_KEY, 15);
     }
 
 //    public static Map<String, ?> setAllContactLimits(Context context) {
