@@ -38,7 +38,7 @@ public class Settings extends AppCompatActivity {
     private SeekBar bufferBar, warningReminderBar;
     private MaterialSwitch switchBtn, callStartBufferSwitchBtn, limitResetForEachCallSwitchBtn, warningReminderSwitchBtn;
     private boolean isChecked = false, isCallStartBufferEnabled = true, islimitRestForEachCallEnabled = false, isWarningReminderEnabled = true;
-    private final int[] BUFFER_VALUES = {10, 20, 30, 60, 120, 180, 240, 300};
+    private final int[] BUFFER_VALUES = {0, 10, 20, 30, 60, 120, 180, 240, 300};
     private final int[] WARNING_REMINDER_VALUES = {5, 10, 15, 20, 30, 45, 60, 120};
 
     @Override
