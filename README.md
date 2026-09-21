@@ -55,6 +55,7 @@ Call Limiter is an Android application designed to help users set a time limit f
 - 🎨 **Dark & Light themes** with system theme support
 - ⚡ **Emergency Buffer Time** (extra seconds for critical calls)
 - 🔒 **Privacy-first** – works fully offline, no data is ever shared
+- 🔔 **Call Limit Warning Reminder** – Get an in-call audio alert and haptic vibration when your remaining call time reaches your chosen threshold
 
 ## ⚒ How It Works
 
@@ -88,6 +89,7 @@ Call Limiter requires the following Android permissions:
 - ⏳ **Call Start Buffer Time** → Enable or disable a 10-second buffer at the beginning of each call
 - 🌐 **Global Call Limit** → Apply default time limit to all contacts automatically
 - ⏳ **Limit Scope (Per Call / Per Day)** → When enabled, the limit resets after each call. Otherwise, it resets daily 
+- 🔔 **Call Limit Warning Reminder** → Enable/disable audio and vibration alerts with customizable threshold (5s – 120s)
 - 📜 **Permissions Page** → View and manage required app permissions
 - 🆘 **Support / Help** → Redirect to GitHub Issues for reporting bugs
 - ℹ️ **About** → Author, Repository, Change Log, Terms & Conditions and Privacy Policy

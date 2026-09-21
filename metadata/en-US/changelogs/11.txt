@@ -1,0 +1,2 @@
+✨ New Features
+- Call Limit Warning Reminder: Get an in-call audio alert (supervisor tone) and haptic vibration when your remaining call time reaches your chosen threshold. Customize the warning time from 5s to 120s, or turn the reminder off anytime.
